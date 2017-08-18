@@ -1,0 +1,11 @@
+*.obj
+*.o
+*.iobj
+*.ipdb
+*.pdb
+UTK/Release/
+.vs/
+Debug/
+*.exp
+*.lastcodeanalysissucceeded
+.vc.db
