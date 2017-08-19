@@ -1,4 +1,4 @@
-#include "GridFrameBase.h"
+﻿#include "GridFrameBase.h"
 
 GridFrameBase::GridFrameBase(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name)
 	:wxGrid(parent, id, pos, size, style, name) {

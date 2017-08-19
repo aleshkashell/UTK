@@ -1,4 +1,4 @@
-#include "SettingsDialog.h"
+﻿#include "SettingsDialog.h"
 
 
 

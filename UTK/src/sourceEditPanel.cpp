@@ -1,4 +1,4 @@
-#include "sourceEditPanel.h"
+﻿#include "sourceEditPanel.h"
 
 
 sourceEditPanel::sourceEditPanel(wxWindow * parent, wxString Path, std::vector<wxString> tblsMachine, std::vector<wxString> tblsList, wxNotebook * gridSrc) :

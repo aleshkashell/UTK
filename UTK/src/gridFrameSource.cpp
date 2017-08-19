@@ -1,4 +1,4 @@
-#include "gridFrameSource.h"
+﻿#include "gridFrameSource.h"
 
 gridFrameSource::gridFrameSource(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size, long style, const wxString & name):
 	GridFrameBase(parent, id, pos, size, style, name)

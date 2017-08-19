@@ -124,48 +124,48 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AboutDialog.h" />
-    <ClInclude Include="addNewRow.h" />
-    <ClInclude Include="BatteryPanel.h" />
-    <ClInclude Include="Definitions.h" />
-    <ClInclude Include="gridFrame.h" />
-    <ClInclude Include="GridFrameBase.h" />
-    <ClInclude Include="gridFrameBattery.h" />
-    <ClInclude Include="gridFrameSource.h" />
-    <ClInclude Include="include\extradition.h" />
-    <ClInclude Include="include\logFile.h" />
-    <ClInclude Include="include\reception.h" />
-    <ClInclude Include="include\sqlite.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="SettingsDialog.h" />
-    <ClInclude Include="sourceEditPanel.h" />
-    <ClInclude Include="utkGuiFrame.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="AboutDialog.cpp" />
-    <ClCompile Include="addNewRow.cpp" />
-    <ClCompile Include="BatteryPanel.cpp" />
-    <ClCompile Include="gridFrame.cpp" />
-    <ClCompile Include="GridFrameBase.cpp" />
-    <ClCompile Include="gridFrameBattery.cpp" />
-    <ClCompile Include="gridFrameSource.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="SettingsDialog.cpp" />
-    <ClCompile Include="sourceEditPanel.cpp" />
-    <ClCompile Include="src\extradition.cpp" />
-    <ClCompile Include="src\logFile.cpp" />
-    <ClCompile Include="src\reception.cpp" />
-    <ClCompile Include="src\sqlite.cpp" />
-    <ClCompile Include="utkGuiFrame.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="history.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="sample3.ico" />
+    <ClInclude Include="include\AboutDialog.h" />
+    <ClInclude Include="include\addNewRow.h" />
+    <ClInclude Include="include\BatteryPanel.h" />
+    <ClInclude Include="include\Definitions.h" />
+    <ClInclude Include="include\delClass.h" />
+    <ClInclude Include="include\extradition.h" />
+    <ClInclude Include="include\gridFrame.h" />
+    <ClInclude Include="include\GridFrameBase.h" />
+    <ClInclude Include="include\gridFrameBattery.h" />
+    <ClInclude Include="include\gridFrameSource.h" />
+    <ClInclude Include="include\logFile.h" />
+    <ClInclude Include="include\main.h" />
+    <ClInclude Include="include\reception.h" />
+    <ClInclude Include="include\resource.h" />
+    <ClInclude Include="include\SettingsDialog.h" />
+    <ClInclude Include="include\sourceEditPanel.h" />
+    <ClInclude Include="include\sqlite.h" />
+    <ClInclude Include="include\utkGuiFrame.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="UTK.rc" />
+    <ClCompile Include="src\AboutDialog.cpp" />
+    <ClCompile Include="src\addNewRow.cpp" />
+    <ClCompile Include="src\BatteryPanel.cpp" />
+    <ClCompile Include="src\delClass.cpp" />
+    <ClCompile Include="src\extradition.cpp" />
+    <ClCompile Include="src\gridFrame.cpp" />
+    <ClCompile Include="src\GridFrameBase.cpp" />
+    <ClCompile Include="src\gridFrameBattery.cpp" />
+    <ClCompile Include="src\gridFrameSource.cpp" />
+    <ClCompile Include="src\logFile.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\reception.cpp" />
+    <ClCompile Include="src\SettingsDialog.cpp" />
+    <ClCompile Include="src\sourceEditPanel.cpp" />
+    <ClCompile Include="src\sqlite.cpp" />
+    <ClCompile Include="src\utkGuiFrame.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rc\UTK.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

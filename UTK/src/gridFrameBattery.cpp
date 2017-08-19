@@ -1,4 +1,4 @@
-#include "gridFrameBattery.h"
+﻿#include "gridFrameBattery.h"
 
 
 gridFrameBattery::gridFrameBattery(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size, long style, const wxString & name)

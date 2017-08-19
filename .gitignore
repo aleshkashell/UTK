@@ -9,3 +9,4 @@ Debug/
 *.exp
 *.lastcodeanalysissucceeded
 .vc.db
+*.swp
