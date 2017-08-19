@@ -12,7 +12,7 @@ public:
 	GridFrameBase(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString &name = wxGridNameStr);
 	void DrawCellHighlight(wxDC& dc, const wxGridCellAttr *attr);
 	bool writeTable(std::vector<std::vector<wxString>> &rows, int badTime = 13);
-	//Разница между датами в часах
+	//Р Р°Р·РЅРёС†Р° РјРµР¶РґСѓ РґР°С‚Р°РјРё РІ С‡Р°СЃР°С…
 	wxString diffTime(wxString dateFirst, wxString dateLast);
 	void Update();
 	void OnSortClickColumn(wxGridEvent &event);

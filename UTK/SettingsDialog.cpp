@@ -2,7 +2,7 @@
 
 
 
-SettingsDialog::SettingsDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, wxT("Настройки программы"))
+SettingsDialog::SettingsDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, wxT("РќР°СЃС‚СЂРѕР№РєРё РїСЂРѕРіСЂР°РјРјС‹"))
 {
 	wxBoxSizer *vBox = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *forButtonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -11,13 +11,13 @@ SettingsDialog::SettingsDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, wx
 
 	wxPanel *panel = new wxPanel(this);
 
-	wxStaticText *lblDatabase = new wxStaticText(panel, wxID_ANY, wxT("База данных"));
-	wxStaticText *lblTimeToColor = new wxStaticText(panel, wxID_ANY, wxT("Время до предупреждения"));
+	wxStaticText *lblDatabase = new wxStaticText(panel, wxID_ANY, wxT("Р‘Р°Р·Р° РґР°РЅРЅС‹С…"));
+	wxStaticText *lblTimeToColor = new wxStaticText(panel, wxID_ANY, wxT("Р’СЂРµРјСЏ РґРѕ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёСЏ"));
 	txtPathToDB = new wxTextCtrl(panel, wxID_ANY, dynamic_cast<utkGuiFrame*>(parent)->getPathToBD(), wxDefaultPosition, wxSize(260, -1));
 	txtTimeToColor = new wxTextCtrl(panel, wxID_ANY, wxString::Format(wxT("%i"), dynamic_cast<utkGuiFrame*>(parent)->getBadTime()), wxDefaultPosition, wxSize(50, -1));
 	wxButton *btnOk = new wxButton(panel, wxID_OK, wxT("OK"));
 	wxButton *btnCancel = new wxButton(panel, wxID_CANCEL, wxT("Cancel"));
-	wxButton *btnView = new wxButton(panel, wxID_PREVIEW, wxT("Обзор..."));
+	wxButton *btnView = new wxButton(panel, wxID_PREVIEW, wxT("РћР±Р·РѕСЂ..."));
 
 	forPathSizer->Add(txtPathToDB, 0, wxLEFT | wxRIGHT | wxBOTTOM, 10);
 	forPathSizer->Add(btnView, 0, wxLEFT | wxRIGHT | wxBOTTOM, 10);
@@ -44,7 +44,7 @@ SettingsDialog::SettingsDialog(wxWindow *parent) : wxDialog(parent, wxID_ANY, wx
 
 void SettingsDialog::OnBtnView(wxCommandEvent &event)
 {
-	wxFileDialog dlg(this, wxT("Выбор базы данных"), "", txtPathToDB->GetValue(), wxT("SQLite files (*.db)|*.db"), wxFD_OPEN);
+	wxFileDialog dlg(this, wxT("Р’С‹Р±РѕСЂ Р±Р°Р·С‹ РґР°РЅРЅС‹С…"), "", txtPathToDB->GetValue(), wxT("SQLite files (*.db)|*.db"), wxFD_OPEN);
 	if (dlg.ShowModal() == wxID_CANCEL) return;
 	txtPathToDB->SetValue(dlg.GetPath());
 }

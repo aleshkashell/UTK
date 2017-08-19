@@ -9,7 +9,7 @@
 #include "addNewRow.h"
 #include "sqlite.h"
 
-//Окно редактирования базы
+//СњРєРЅРѕ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёВ¤ Р±Р°Р·С‹
 class sourceEditPanel :
 	public wxPanel
 {
@@ -22,8 +22,8 @@ public:
 	void renewDB(wxString path);
 	~sourceEditPanel();
 private:
-	MyDB *db;			//Для редактирования базы
-	wxNotebook *gridSource;	//Для получения значений из таблицы
+	MyDB *db;			//Ж’Р»В¤ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёВ¤ Р±Р°Р·С‹
+	wxNotebook *gridSource;	//Ж’Р»В¤ РїРѕР»СѓС‡РµРЅРёВ¤ Р·РЅР°С‡РµРЅРёР№ РёР· С‚Р°Р±Р»РёС†С‹
 	wxButton *btnAdd;
 	wxButton *btnEdit;
 	wxButton *btnDel;

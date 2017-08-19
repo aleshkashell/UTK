@@ -8,11 +8,11 @@ gridFrameBattery::gridFrameBattery(wxWindow * parent, wxWindowID id, const wxPoi
 }
 bool gridFrameBattery::writeTableHelp(std::vector<std::vector<wxString>>& rows, int sortField, bool asc, int badTime)
 {
-	int timeInWork = 3;		//Часов в работе
-	int numUnit = 0;		//Колонка с номером техники
-	int dateOut = 2;		//Дата выдачи
-							//int badTime = 13;		//Время, через которое строка закрашивается в красный
-							//Выбор количества строк для отрисовки
+	int timeInWork = 3;		//Р§Р°СЃРѕРІ РІ СЂР°Р±РѕС‚Рµ
+	int numUnit = 0;		//РљРѕР»РѕРЅРєР° СЃ РЅРѕРјРµСЂРѕРј С‚РµС…РЅРёРєРё
+	int dateOut = 2;		//Р”Р°С‚Р° РІС‹РґР°С‡Рё
+							//int badTime = 13;		//Р’СЂРµРјСЏ, С‡РµСЂРµР· РєРѕС‚РѕСЂРѕРµ СЃС‚СЂРѕРєР° Р·Р°РєСЂР°С€РёРІР°РµС‚СЃСЏ РІ РєСЂР°СЃРЅС‹Р№
+							//Р’С‹Р±РѕСЂ РєРѕР»РёС‡РµСЃС‚РІР° СЃС‚СЂРѕРє РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё
 	if (rows.size() > this->GetNumberRows())
 	{
 		this->AppendRows(rows.size() - this->GetNumberRows());
@@ -23,12 +23,12 @@ bool gridFrameBattery::writeTableHelp(std::vector<std::vector<wxString>>& rows, 
 	}
 	//wxMessageBox(wxString::Format(wxT("%i"),this->GetNumberCols()));
 	int maxim = std::min(int(rows[0].size()), this->GetNumberCols());
-	//Вычисление времени в работе, если техника ещё не сдана
+	//Р’С‹С‡РёСЃР»РµРЅРёРµ РІСЂРµРјРµРЅРё РІ СЂР°Р±РѕС‚Рµ, РµСЃР»Рё С‚РµС…РЅРёРєР° РµС‰С‘ РЅРµ СЃРґР°РЅР°
 	for (auto &row : rows)
 	{
 		if (row[timeInWork] == "") row[timeInWork] = diffTime(row[dateOut], wxDateTime::Now().FormatISOCombined(' '));
 	}
-	//Сортировка данных по полю
+	//РЎРѕСЂС‚РёСЂРѕРІРєР° РґР°РЅРЅС‹С… РїРѕ РїРѕР»СЋ
 	if (sortField != timeInWork && sortField != numUnit) {
 		if (asc)
 			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> a, std::vector<wxString> b) {return a[sortField] < b[sortField]; });
@@ -41,12 +41,12 @@ bool gridFrameBattery::writeTableHelp(std::vector<std::vector<wxString>>& rows, 
 		else
 			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> a, std::vector<wxString> b) {return wxAtoi(a[sortField]) > wxAtoi(b[sortField]); });
 	}
-	//Заполнение таблицы
+	//Р—Р°РїРѕР»РЅРµРЅРёРµ С‚Р°Р±Р»РёС†С‹
 	for (int i = 0; i < rows.size(); i++) {
 		for (int g = 0; g < maxim; g++) {
 			this->SetCellValue(i, g, rows[i][g]);
-			//Закрашивание ячеек
-			if (rows[i][1] != wxT("В работе"))
+			//Р—Р°РєСЂР°С€РёРІР°РЅРёРµ СЏС‡РµРµРє
+			if (rows[i][1] != wxT("Р’ СЂР°Р±РѕС‚Рµ"))
 				//this->SetCellBackgroundColour(i, g, wxColour(wxT("green")));
 				this->SetCellBackgroundColour(i, g, colorGood);
 			else
@@ -56,18 +56,18 @@ bool gridFrameBattery::writeTableHelp(std::vector<std::vector<wxString>>& rows, 
 	return true;
 }
 void gridFrameBattery::initVar(){
-	wxString str("Дата выдачи", wxCSConv(wxT("utf8")));
-	nameColmn.push_back(wxT("№ батареи"));
-	nameColmn.push_back(wxT("Статус"));
-	nameColmn.push_back(wxT("Дата приёма/выдачи"));
-	nameColmn.push_back(wxT("Время заряда/работы"));
-	nameColmn.push_back(wxT("Принял/выдал"));
+	wxString str("Р”Р°С‚Р° РІС‹РґР°С‡Рё", wxCSConv(wxT("utf8")));
+	nameColmn.push_back(wxT("в„– Р±Р°С‚Р°СЂРµРё"));
+	nameColmn.push_back(wxT("РЎС‚Р°С‚СѓСЃ"));
+	nameColmn.push_back(wxT("Р”Р°С‚Р° РїСЂРёС‘РјР°/РІС‹РґР°С‡Рё"));
+	nameColmn.push_back(wxT("Р’СЂРµРјСЏ Р·Р°СЂСЏРґР°/СЂР°Р±РѕС‚С‹"));
+	nameColmn.push_back(wxT("РџСЂРёРЅСЏР»/РІС‹РґР°Р»"));
 }
 bool gridFrameBattery::writeTable(std::vector<std::vector<wxString>>& rows, int badTime){
 	mRows.clear();
 	for (auto line : rows) {
 		std::vector<wxString> tmpLine;
-		if(line[1] == "В работе"){
+		if(line[1] == "Р’ СЂР°Р±РѕС‚Рµ"){
 			tmpLine.push_back(line[0]);
 			tmpLine.push_back(line[1]);
 			tmpLine.push_back(line[3]);

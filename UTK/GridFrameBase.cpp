@@ -41,11 +41,11 @@ bool GridFrameBase::writeTable(std::vector<std::vector<wxString>> &rows, int bad
 }
 bool GridFrameBase::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc, int badTime)
 {
-	int timeInWork = 3;		//Часов в работе
-	int numUnit = 0;		//Колонка с номером техники
-	int dateOut = 2;		//Дата выдачи
-							//int badTime = 13;		//Время, через которое строка закрашивается в красный
-							//Выбор количества строк для отрисовки
+	int timeInWork = 3;		//Р§Р°СЃРѕРІ РІ СЂР°Р±РѕС‚Рµ
+	int numUnit = 0;		//РљРѕР»РѕРЅРєР° СЃ РЅРѕРјРµСЂРѕРј С‚РµС…РЅРёРєРё
+	int dateOut = 2;		//Р”Р°С‚Р° РІС‹РґР°С‡Рё
+							//int badTime = 13;		//Р’СЂРµРјСЏ, С‡РµСЂРµР· РєРѕС‚РѕСЂРѕРµ СЃС‚СЂРѕРєР° Р·Р°РєСЂР°С€РёРІР°РµС‚СЃСЏ РІ РєСЂР°СЃРЅС‹Р№
+							//Р’С‹Р±РѕСЂ РєРѕР»РёС‡РµСЃС‚РІР° СЃС‚СЂРѕРє РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё
 	if (rows.size() > this->GetNumberRows())
 	{
 		this->AppendRows(rows.size() - this->GetNumberRows());
@@ -55,12 +55,12 @@ bool GridFrameBase::writeTableHelp(std::vector<std::vector<wxString>> &rows, int
 		this->DeleteRows(rows.size(), (this->GetNumberRows() - rows.size()));
 	}
 	int maxim = std::min(int(rows[0].size()), this->GetNumberCols());
-	//Вычисление времени в работе, если техника ещё не сдана
+	//Р’С‹С‡РёСЃР»РµРЅРёРµ РІСЂРµРјРµРЅРё РІ СЂР°Р±РѕС‚Рµ, РµСЃР»Рё С‚РµС…РЅРёРєР° РµС‰С‘ РЅРµ СЃРґР°РЅР°
 	for (auto &row : rows)
 	{
 		if (row[timeInWork] == "") row[timeInWork] = diffTime(row[dateOut], wxDateTime::Now().FormatISOCombined(' '));
 	}
-	//Сортировка данных по полю
+	//РЎРѕСЂС‚РёСЂРѕРІРєР° РґР°РЅРЅС‹С… РїРѕ РїРѕР»СЋ
 	if (sortField != timeInWork && sortField != numUnit) {
 		if (asc)
 			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> a, std::vector<wxString> b) {return a[sortField] < b[sortField]; });
@@ -73,11 +73,11 @@ bool GridFrameBase::writeTableHelp(std::vector<std::vector<wxString>> &rows, int
 		else
 			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> a, std::vector<wxString> b) {return wxAtoi(a[sortField]) > wxAtoi(b[sortField]); });
 	}
-	//Заполнение таблицы
+	//Р—Р°РїРѕР»РЅРµРЅРёРµ С‚Р°Р±Р»РёС†С‹
 	for (int i = 0; i < rows.size(); i++) {
 		for (int g = 0; g < maxim; g++) {
 			this->SetCellValue(i, g, rows[i][g]);
-			//Закрашивание ячеек
+			//Р—Р°РєСЂР°С€РёРІР°РЅРёРµ СЏС‡РµРµРє
 			if (wxAtoi(rows[i][3]) < badTime)
 				//this->SetCellBackgroundColour(i, g, wxColour(wxT("green")));
 				this->SetCellBackgroundColour(i, g, colorGood);

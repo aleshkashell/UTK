@@ -11,9 +11,9 @@ public:
 	void OnEnterTXTNum(wxCommandEvent& event);
 	//void OnBtnOK(wxCommandEvent& event);
 	void Clear();
-	//get функции
+	//get С„СѓРЅРєС†РёРё
 	wxString GetTxtNum();
-	//ID комплектующих
+	//ID РєРѕРјРїР»РµРєС‚СѓСЋС‰РёС…
 	static long const ID_TXTNUM;
 	static long const ID_BTNOK;
 

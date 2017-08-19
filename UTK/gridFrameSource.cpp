@@ -8,8 +8,8 @@ gridFrameSource::gridFrameSource(wxWindow * parent, wxWindowID id, const wxPoint
 }
 void gridFrameSource::initVar()
 {
-	nameColmn.push_back(wxT("Номер техники"));
-	nameColmn.push_back(wxT("Вид техники"));
+	nameColmn.push_back(wxT("РќРѕРјРµСЂ С‚РµС…РЅРёРєРё"));
+	nameColmn.push_back(wxT("Р’РёРґ С‚РµС…РЅРёРєРё"));
 }
 bool gridFrameSource::writeTable(std::vector<std::vector<wxString>> &rows){
 	mRows = rows;
@@ -17,7 +17,7 @@ bool gridFrameSource::writeTable(std::vector<std::vector<wxString>> &rows){
 	return false;
 }
 bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, int asc) {
-	//Выбор количества строк для отрисовки
+	//Р’С‹Р±РѕСЂ РєРѕР»РёС‡РµСЃС‚РІР° СЃС‚СЂРѕРє РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё
 	if (rows.size() > this->GetNumberRows()){
 		this->AppendRows(rows.size() - this->GetNumberRows());
 	}
@@ -25,8 +25,8 @@ bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, i
 		this->DeleteRows(rows.size(), (this->GetNumberRows() - rows.size()));
 	}
 	int maxim = std::min(int(rows[0].size()), this->GetNumberCols());	
-	//Сортировка
-	if (sortField != 1) {	//Не равно полю с номером
+	//РЎРѕСЂС‚РёСЂРѕРІРєР°
+	if (sortField != 1) {	//РќРµ СЂР°РІРЅРѕ РїРѕР»СЋ СЃ РЅРѕРјРµСЂРѕРј
 		if (asc)
 			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return a[sortField] < b[sortField]; });
 		else
@@ -38,7 +38,7 @@ bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, i
 		else
 			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return wxAtoi(a[sortField]) > wxAtoi(b[sortField]); });
 	}
-	//Заполнение таблицы
+	//Р—Р°РїРѕР»РЅРµРЅРёРµ С‚Р°Р±Р»РёС†С‹
 	for (int i = 0; i < rows.size(); i++) {
 		for (int g = 0; g < maxim; g++)
 			this->SetCellValue(i, g, rows[i][g+1]);

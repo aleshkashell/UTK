@@ -7,9 +7,9 @@ sourceEditPanel::sourceEditPanel(wxWindow * parent, wxString Path, std::vector<w
 	db = new MyDB(Path, m_tblsMachine, m_tblsList);
 	gridSource = gridSrc;
 	wxBoxSizer *vBox = new wxBoxSizer(wxVERTICAL);
-	btnAdd = new wxButton(this, wxID_ANY, wxT("Добавить"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator);
-	btnEdit = new wxButton(this, wxID_ANY, wxT("Редактировать"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator);
-	btnDel = new wxButton(this, wxID_ANY, wxT("Удалить"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator);
+	btnAdd = new wxButton(this, wxID_ANY, wxT("Р”РѕР±Р°РІРёС‚СЊ"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator);
+	btnEdit = new wxButton(this, wxID_ANY, wxT("Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator);
+	btnDel = new wxButton(this, wxID_ANY, wxT("РЈРґР°Р»РёС‚СЊ"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator);
 
 	vBox->Add(btnAdd, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 10);
 	vBox->Add(btnEdit, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 10);
@@ -46,7 +46,7 @@ void sourceEditPanel::OnButtonEdit(wxCommandEvent &event) {
 	gridFrameSource *tmpGrid = dynamic_cast<gridFrameSource*>(gridSource->GetCurrentPage());
 	wxArrayInt rows = tmpGrid->GetSelectedRows();
 	if (rows.size() == 0) {
-		wxMessageBox(wxT("Выберите строку для редактирования"));
+		wxMessageBox(wxT("Р’С‹Р±РµСЂРёС‚Рµ СЃС‚СЂРѕРєСѓ РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ"));
 		return;
 	}	
 	addNewRow dlg(this);
@@ -73,13 +73,13 @@ void sourceEditPanel::OnButtonDel(wxCommandEvent & event)
 	gridFrameSource *tmpGrid = dynamic_cast<gridFrameSource*>(gridSource->GetCurrentPage());
 	wxArrayInt rows = tmpGrid->GetSelectedRows();
 	if (rows.size() == 0) {
-		wxMessageBox(wxT("Выберите хотя бы одну строку для удаления."));
+		wxMessageBox(wxT("Р’С‹Р±РµСЂРёС‚Рµ С…РѕС‚СЏ Р±С‹ РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ."));
 		return;
 	}
 	for (auto row : rows) {
 		db->removeUnit(tmpGrid->GetCellValue(row, 0), gridSource->GetSelection());
 	}
-	wxMessageBox(wxT("Удалено ") + wxString::Format(wxT("%i"), rows.size()) + wxT(" строк"));
+	wxMessageBox(wxT("РЈРґР°Р»РµРЅРѕ ") + wxString::Format(wxT("%i"), rows.size()) + wxT(" СЃС‚СЂРѕРє"));
 
 }
 

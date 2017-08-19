@@ -3,15 +3,15 @@
 
 
 addNewRow::addNewRow(wxWindow *parent):
-	wxDialog(parent, wxID_ANY, wxT("Äîáàâëåíèå ñòğîêè"))
+	wxDialog(parent, wxID_ANY, wxT("Ğ”Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ ÑÑ‚Ñ€Ğ¾ĞºĞ¸"))
 {
 	wxBoxSizer *vBox = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *hBoxNumber = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *hBoxName = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *hBoxButton = new wxBoxSizer(wxHORIZONTAL);
 
-	wxStaticText *lblNumber = new wxStaticText(this, wxID_ANY, wxT("Íîìåğ òåõíèêè:"), wxDefaultPosition, wxSize(100, 15));
-	wxStaticText *lblName = new wxStaticText(this, wxID_ANY, wxT("Èìÿ òåõíèêè:"), wxDefaultPosition, wxSize(100, 15));
+	wxStaticText *lblNumber = new wxStaticText(this, wxID_ANY, wxT("ĞĞ¾Ğ¼ĞµÑ€ Ñ‚ĞµÑ…Ğ½Ğ¸ĞºĞ¸:"), wxDefaultPosition, wxSize(100, 15));
+	wxStaticText *lblName = new wxStaticText(this, wxID_ANY, wxT("Ğ˜Ğ¼Ñ Ñ‚ĞµÑ…Ğ½Ğ¸ĞºĞ¸:"), wxDefaultPosition, wxSize(100, 15));
 
 	//hBoxNumber->Add(lblNumber);
 	

@@ -1,14 +1,14 @@
-#include "AboutDialog.h"
+ï»¿#include "AboutDialog.h"
 
 
 
-AboutDialog::AboutDialog(wxWindow *parent, std::string version): wxDialog(parent, wxID_ANY, wxT("Î ïðîãðàììå")), progVersion(version){
+AboutDialog::AboutDialog(wxWindow *parent, std::string version): wxDialog(parent, wxID_ANY, wxT("Ðž Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ðµ")), progVersion(version){
 	wxBoxSizer* vBox = new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(this);
 
-	wxStaticText *lblDescription = new wxStaticText(panel, wxID_ANY, wxT("Ïðîãðàììà ó÷¸òà òåõíèêè."));
-	wxStaticText *lblVersion = new wxStaticText(panel, wxID_ANY, wxT("Âåðñèÿ: ") + progVersion);
-	wxStaticText *lblAuthor = new wxStaticText(panel, wxID_ANY, wxT("Àâòîð: Øåëóä÷åíêîâ Àëåêñåé."));
+	wxStaticText *lblDescription = new wxStaticText(panel, wxID_ANY, wxT("ÐŸÑ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° ÑƒÑ‡Ñ‘Ñ‚Ð° Ñ‚ÐµÑ…Ð½Ð¸ÐºÐ¸."));
+	wxStaticText *lblVersion = new wxStaticText(panel, wxID_ANY, wxT("Ð’ÐµÑ€ÑÐ¸Ñ: ") + progVersion);
+	wxStaticText *lblAuthor = new wxStaticText(panel, wxID_ANY, wxT("ÐÐ²Ñ‚Ð¾Ñ€: Ð¨ÐµÐ»ÑƒÐ´Ñ‡ÐµÐ½ÐºÐ¾Ð² ÐÐ»ÐµÐºÑÐµÐ¹."));
 	wxButton *btnOk = new wxButton(panel, wxID_OK, wxT("OK"));
 
 	vBox->Add(lblDescription);
