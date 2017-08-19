@@ -6,7 +6,6 @@
 #include <wx/wxsqlite3.h>
 #include <wx/file.h>
 #include <wx/textfile.h>
-//#include <xlnt/xlnt.hpp>
 #include <xlsxwriter.h>
 #include <wx/wfstream.h>
 #include <iostream>
@@ -15,9 +14,12 @@
 #include <codecvt>
 #include <logFile.h>
 //For user name
-#include <lmcons.h>
-#include <windows.h>
-
+#ifdef _WIN32
+    #include <lmcons.h>
+    #include <windows.h>
+#elif __LINUX__
+    //If linux
+#endif
 
 struct field
 {

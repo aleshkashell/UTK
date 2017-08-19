@@ -4,12 +4,12 @@ MyDB::MyDB(wxString name, std::vector<wxString> tblMachine, std::vector<wxString
 {
 	tblSource = tblList;
 	tblWork = tblMachine;
-	tblRepair = "Ремонт";
-	tblBattery = "Аккумуляторы_тек";
-	tblHistoryBattery = "Аккумуляторы";
-	loginRemont = "remont";
+    tblRepair = wxT("Ремонт");
+    tblBattery = wxT("Аккумуляторы_тек");
+    tblHistoryBattery = wxT("Аккумуляторы");
+    loginRemont = wxT("remont");
 	initVar();
-	errMsg = "error is not touch";
+    errMsg = wxT("error is not touch");
 	if (!iniTDB(name)) {
 		errMsg = wxT("Инициализирована некорректная БД");
 		myFunc::writeLog(errMsg);
@@ -226,10 +226,15 @@ wxString MyDB::diffTime(wxString dateFirst, wxString dateLast)
 }
 wxString MyDB::getUserName()
 {
-	wchar_t buffer[UNLEN + 1];
+#ifdef __WIN32
+    wchar_t buffer[UNLEN + 1];
 	DWORD len = UNLEN + 1;
 	GetUserName(buffer, &len);
-	return wxString(buffer);
+    return wxString(buffer);
+#elif __LINUX__
+    return wxString(wxT("Пользователь Linux"));
+#endif
+    return wxString(wxT("Unknown system"));
 }
 std::vector<std::vector<wxString>> MyDB::getAllNeed(bool onlyInWork)
 {
@@ -785,7 +790,8 @@ bool MyDB::createSourceTable()
 		catch (wxSQLite3Exception &e) {
 			errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
 			myFunc::writeLog(errMsg);
-			return false;
+            myFunc::writeLog(wxT("Таблица: ") + sourceTable + wxT("; Req = \"") + request + wxT("\""));
+            return false;
 		}
 	}
 	return true;
@@ -809,6 +815,7 @@ bool MyDB::createWorkTable() {
 		catch (wxSQLite3Exception &e) {
 			errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
 			myFunc::writeLog(errMsg);
+            myFunc::writeLog(wxT("Таблица: ") + workTable + wxT("; Req = \"") + request + wxT("\""));
 			return false;
 		}
 	}
@@ -832,7 +839,8 @@ bool MyDB::createRepairTable() {
 	catch (wxSQLite3Exception &e) {
 		errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
 		myFunc::writeLog(errMsg);
-		return false;
+        myFunc::writeLog(wxT("Таблица: ") + tblRepair + wxT("; Req = \"") + request + wxT("\""));
+        return false;
 	}
 	return true;
 }
@@ -851,7 +859,8 @@ bool MyDB::createBatteryTable() {
 	}
 	catch (wxSQLite3Exception &e) {
 		errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
-		myFunc::writeLog(errMsg);
+        myFunc::writeLog(wxT("Таблица: ") + tblBattery + wxT("; Req = \"") + request + wxT("\""));
+        myFunc::writeLog(errMsg);
 		return false;
 	}
 	return true;
@@ -872,7 +881,8 @@ bool MyDB::createHistoryBatteryTable() {
 	catch (wxSQLite3Exception &e) {
 		errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
 		myFunc::writeLog(errMsg);
-		return false;
+        myFunc::writeLog(wxT("Таблица: ") + tblHistoryBattery + wxT("; Req = \"") + request + wxT("\""));
+        return false;
 	}
 	return true;
 }
