@@ -1,4 +1,7 @@
 ﻿#include "utkGuiFrame.h"
+#ifdef __LINUX__
+#include "../rc/icon_track.xpm"
+#endif
 
 utkGuiFrame::utkGuiFrame(const wxString &title): wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 500), wxDEFAULT_FRAME_STYLE)
 {
@@ -20,6 +23,7 @@ void utkGuiFrame::StableIniT() {
 	this->SetIcon(icon3);
 #elif __LINUX__
     //Create icon for linux
+    this->SetIcon(icon_track_xpm);
 #endif
 	editTable = true;
 	loadConfig();
