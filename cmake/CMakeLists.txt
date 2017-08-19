@@ -4,6 +4,10 @@ project(UTK)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb")
 add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1 -D_CRT_NON_CONFORMING_SWPRINTFS=1 -D_SCL_SECURE_NO_WARNINGS=1 -DNDEBUG -D_UNICODE -DNOPCH -D_XKEYCHECK_H)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../UTK/src ${CMAKE_CURRENT_SOURCE_DIR}/../UTK/include /usr/local/include/nlohmann)
+
+message("${PROJECT_SOURCE_DIR}")
+message("${INCLUDE_DIRECTORIES}")
+
 set(MY_SRC "../UTK/src/main.cpp" "../UTK/include/main.h" "../UTK/src/AboutDialog.cpp" "../UTK/include/AboutDialog.h" "../UTK/src/addNewRow.cpp"
         "../UTK/include/addNewRow.h" "../UTK/include/Definitions.h" "../UTK/src/gridFrameSource.cpp" "../UTK/include/gridFrameSource.h"
         "../UTK/src/SettingsDialog.cpp" "../UTK/include/SettingsDialog.h" "../UTK/src/sourceEditPanel.cpp"
@@ -12,6 +16,7 @@ set(MY_SRC "../UTK/src/main.cpp" "../UTK/include/main.h" "../UTK/src/AboutDialog
         "../UTK/src/gridFrame.cpp" "../UTK/src/logFile.cpp" "../UTK/src/reception.cpp" "../UTK/src/sqlite.cpp" "../UTK/src/extradition.cpp"
         "../UTK/include/GridFrameBase.h" "../UTK/src/GridFrameBase.cpp" "../UTK/include/BatteryPanel.h" "../UTK/src/BatteryPanel.cpp"
         "../UTK/include/gridFrameBattery.h" "../UTK/src/gridFrameBattery.cpp")
+    message("${MY_SRC}")
 
 add_executable(${PROJECT_NAME} ${MY_SRC})
 
