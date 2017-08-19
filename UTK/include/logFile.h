@@ -6,4 +6,6 @@
 namespace myFunc {
 	wxString getNowDate();
 	void writeLog(wxString text);
+    void logToStd(wxString text);
+    void logToCerr(wxString text);
 };

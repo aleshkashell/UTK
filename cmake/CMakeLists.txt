@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(UTK)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb")
+#set(CMAKE_BUILD_TYPE Release ... FORCE)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -D_DEBUG")
 add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1 -D_CRT_NON_CONFORMING_SWPRINTFS=1 -D_SCL_SECURE_NO_WARNINGS=1 -DNDEBUG -D_UNICODE -DNOPCH -D_XKEYCHECK_H)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../UTK/src ${CMAKE_CURRENT_SOURCE_DIR}/../UTK/include /usr/local/include/nlohmann)
-
-message("${PROJECT_SOURCE_DIR}")
-message("${INCLUDE_DIRECTORIES}")
 
 set(MY_SRC "../UTK/src/main.cpp" "../UTK/include/main.h" "../UTK/src/AboutDialog.cpp" "../UTK/include/AboutDialog.h" "../UTK/src/addNewRow.cpp"
         "../UTK/include/addNewRow.h" "../UTK/include/Definitions.h" "../UTK/src/gridFrameSource.cpp" "../UTK/include/gridFrameSource.h"

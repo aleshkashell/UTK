@@ -10,3 +10,13 @@ void myFunc::writeLog(wxString text) {
 	logFile.Write(wxTextFile::GetEOL());
 	logFile.Close();
 }
+void myFunc::logToStd(wxString text){
+#ifdef _DEBUG
+    std::cout << __LINE__ << wxT(":") << text << std::endl;
+#endif
+}
+void myFunc::logToCerr(wxString text){
+#ifdef _DEBUG
+    std::cerr << wxT("CERR: ") << text << std::endl;
+#endif
+}

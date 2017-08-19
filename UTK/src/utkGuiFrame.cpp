@@ -2,6 +2,8 @@
 
 utkGuiFrame::utkGuiFrame(const wxString &title): wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 500), wxDEFAULT_FRAME_STYLE)
 {
+    myFunc::logToStd(wxT("This is debug cout line"));
+    myFunc::logToCerr(wxT("This is cerr line"));
 	StableIniT();
 	DynInit();
 	preTableUpdate();
