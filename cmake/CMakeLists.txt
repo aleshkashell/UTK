@@ -14,7 +14,7 @@ set(MY_SRC "../UTK/src/main.cpp" "../UTK/include/main.h" "../UTK/src/AboutDialog
         "../UTK/include/gridFrame.h" "../UTK/include/logFile.h" "../UTK/include/reception.h" "../UTK/include/sqlite.h"
         "../UTK/src/gridFrame.cpp" "../UTK/src/logFile.cpp" "../UTK/src/reception.cpp" "../UTK/src/sqlite.cpp" "../UTK/src/extradition.cpp"
         "../UTK/include/GridFrameBase.h" "../UTK/src/GridFrameBase.cpp" "../UTK/include/BatteryPanel.h" "../UTK/src/BatteryPanel.cpp"
-        "../UTK/include/gridFrameBattery.h" "../UTK/src/gridFrameBattery.cpp")
+        "../UTK/include/gridFrameBattery.h" "../UTK/src/gridFrameBattery.cpp" "../UTK/history.txt")
     message("${MY_SRC}")
 
 add_executable(${PROJECT_NAME} ${MY_SRC})
