@@ -97,11 +97,8 @@ public:
 	bool exportCSV(wxString path);
 
 	//Создание таблицы 
-	bool createSourceTable();
-	bool createWorkTable();
-	bool createRepairTable();
-	bool createBatteryTable();
-	bool createHistoryBatteryTable();
+    bool createTable(wxString tableName, std::vector<field> lFields);
+    bool createAndCheckAllTable();
 	//Показать список имеющейся техники
 	std::vector<std::vector<wxString>> getSourceUnit(int numTable);
 	//Удалить технику

@@ -18,6 +18,15 @@ MyDB::MyDB(wxString name, std::vector<wxString> tblMachine, std::vector<wxString
 	else dbIsCorrect = true;
 	
 }
+bool MyDB::createAndCheckAllTable(){
+    for(auto name: tblSource) if(!createTable(name, mSrcFields)) return false;
+    for(auto name: tblWork) if(!createTable(name, fields)) return false;
+    if(!createTable(tblRepair, fields)) return false;
+    if(!createTable(tblBattery, mBatteryFields)) return false;
+    if(!createTable(tblHistoryBattery, mHistoryBatteryFields)) return false;
+    return true;
+}
+
 bool MyDB::iniTDB(wxString name)
 {
 	if (db.IsOpen())
@@ -27,11 +36,10 @@ bool MyDB::iniTDB(wxString name)
 		db.Open(name);
 		if (!db.IsOpen()) {
 			std::cerr << "Database is not open" << std::endl;
+            return false;
 		}
-		//Проверка, что нужные таблицы существуют
-		if (!createSourceTable() || !createWorkTable() || !createRepairTable() || !createBatteryTable() || !createHistoryBatteryTable()) {
-			return false;
-		}
+        //Проверка, что нужные таблицы существуют, а также проверка на необходимые поля
+        createAndCheckAllTable();
 	}
 	catch (wxSQLite3Exception &e)
 	{
@@ -39,36 +47,7 @@ bool MyDB::iniTDB(wxString name)
 		myFunc::writeLog(errMsg);
 		return false;
 	}
-	//Проверка, что в таблице имеются нужные поля
-	for (auto tableName : tblSource) {
-        if (!checkTable(tableName, mSrcFields)) {
-			errMsg = "Error in source table: " + tableName;
-			myFunc::writeLog(errMsg);
-			return false;
-		}
-	}
-	for (auto tableName : tblWork) {
-        if (!checkTable(tableName, fields)) {
-			errMsg = "Error in work table: " + tableName;
-			myFunc::writeLog(errMsg);
-			return false;
-		}
-	}
-    if (!checkTable(tblRepair, fields)) {
-		errMsg = "Error in repair table: " + tblRepair;
-		myFunc::writeLog(errMsg);
-		return false;
-	}
-    if (!checkTable(tblBattery, mBatteryFields)) {
-		errMsg = "Error in repair table: " + tblBattery;
-		myFunc::writeLog(errMsg);
-		return false;
-	}
-    if (!checkTable(tblHistoryBattery, mHistoryBatteryFields)) {
-		errMsg = "Error in repair table: " + tblHistoryBattery;
-		myFunc::writeLog(errMsg);
-		return false;
-	}
+
 	return true;
 }
 bool MyDB::renewDB(wxString name, std::vector<wxString> tblMachine, std::vector<wxString> tblList)
@@ -83,15 +62,8 @@ bool MyDB::renewDB(wxString name, std::vector<wxString> tblMachine, std::vector<
 		return false;
 	}
 	//Проверка, что нужные таблицы существуют
-	if (!createSourceTable()) {
-		//errMsg = wxT("Source table is not create");
-		myFunc::writeLog(wxT("Source table is not create"));
-		dbIsCorrect = false;
-		return false;
-	}
-	if (!createWorkTable()) {
-		//errMsg = 
-		myFunc::writeLog(wxT("Work table is not create"));
+    if(!createAndCheckAllTable()){
+        myFunc::writeLog(wxT("Create table false"));
 		dbIsCorrect = false;
 		return false;
 	}
@@ -778,117 +750,34 @@ bool MyDB::exportXLSX(wxString path)
 	}
 	return true;
 }*/
-bool MyDB::createSourceTable()
-{
-	for (auto sourceTable : tblSource) {
-		if (db.TableExists(sourceTable)) {
-            if (checkTable(sourceTable, mSrcFields)) continue;
-			else return false;
-		}
-		wxString request = wxT("CREATE TABLE ") + sourceTable + wxT("(ID INTEGER primary key, \"") +
-			column.numUnit.name + wxT("\" INTEGER UNIQUE, \"") + column.nameUnit.name + wxT("\" TEXT)");
-		try {
-			db.ExecuteUpdate(request);
-		}
-		catch (wxSQLite3Exception &e) {
-			errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
-			myFunc::writeLog(errMsg);
-            myFunc::writeLog(wxT("Таблица: ") + sourceTable + wxT("; Req = \"") + request + wxT("\""));
+bool MyDB::createTable(wxString tableName, std::vector<field> lFields){
+    //Если таблица существует
+    if(db.TableExists(tableName)){
+        if(checkTable(tableName, lFields)){
+            return true;
+        }
+        else{
             return false;
-		}
-	}
-	return true;
-}
-bool MyDB::createWorkTable() {
-	for (auto workTable : tblWork) {
-		//Таблица существует
-		if (db.TableExists(workTable)) {
-            if (checkTable(workTable, fields)) continue;	//Проверяем корректность и продолжаем
-			else return false;
-		}
-		//Делаем новую
-		wxString request = wxT("CREATE TABLE ") + workTable + wxT("(ID INTEGER primary key");
-		for (auto x : fields) {
-			request += wxT(", \"") + x.name + wxT("\" ") + x.type;
-		}
-		request += wxT(")");
-		try {
-			db.ExecuteUpdate(request);
-		}
-		catch (wxSQLite3Exception &e) {
-			errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
-			myFunc::writeLog(errMsg);
-            myFunc::writeLog(wxT("Таблица: ") + workTable + wxT("; Req = \"") + request + wxT("\""));
-			return false;
-		}
-	}
-	return true;
-}
-bool MyDB::createRepairTable() {
-	if (db.TableExists(tblRepair)) {
-        if (checkTable(tblRepair, fields)) return true;	//Проверяем корректность
-		else return false;
-	}
-	//Если таблицы не существует
-	//Делаем новую
-	wxString request = wxT("CREATE TABLE ") + tblRepair + wxT("(ID INTEGER primary key");
-	for (auto x : fields) {
-		request += wxT(", \"") + x.name + wxT("\" ") + x.type;
-	}
-	request += wxT(")");
-	try {
-		db.ExecuteUpdate(request);
-	}
-	catch (wxSQLite3Exception &e) {
-		errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
-		myFunc::writeLog(errMsg);
+        }
+    }
+    wxString request = wxT("CREATE TABLE ") + tableName + wxT("(ID INTEGER primary key");
+    for (auto x : lFields) {
+        request += wxT(", \"") + x.name + wxT("\" ") + x.type;
+    }
+    request += wxT(")");
+    try {
+        db.ExecuteUpdate(request);
+    }
+    catch (wxSQLite3Exception &e) {
+        errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+        myFunc::writeLog(errMsg);
         myFunc::writeLog(wxT("Таблица: ") + tblRepair + wxT("; Req = \"") + request + wxT("\""));
         return false;
-	}
-	return true;
+    }
+    return true;
+
 }
-bool MyDB::createBatteryTable() {
-	if (db.TableExists(tblBattery)) {
-        if (checkTable(tblBattery, mBatteryFields)) return true;
-		else return false;
-	}
-	wxString request = wxT("CREATE TABLE ") + tblBattery + wxT("(ID INTEGER primary key");
-	for (auto x : mBatteryFields) {
-		request += wxT(", \"") + x.name + wxT("\" ") + x.type;
-	}
-	request += wxT(")");
-	try {
-		db.ExecuteUpdate(request);
-	}
-	catch (wxSQLite3Exception &e) {
-		errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
-        myFunc::writeLog(wxT("Таблица: ") + tblBattery + wxT("; Req = \"") + request + wxT("\""));
-        myFunc::writeLog(errMsg);
-		return false;
-	}
-	return true;
-}
-bool MyDB::createHistoryBatteryTable() {
-	if (db.TableExists(tblHistoryBattery)) {
-        if (checkTable(tblHistoryBattery, mHistoryBatteryFields)) return true;
-		else return false;
-	}
-	wxString request = wxT("CREATE TABLE ") + tblHistoryBattery + wxT("(ID INTEGER primary key");
-	for (auto x : mHistoryBatteryFields) {
-		request += wxT(", \"") + x.name + wxT("\" ") + x.type;
-	}
-	request += wxT(")");
-	try {
-		db.ExecuteUpdate(request);
-	}
-	catch (wxSQLite3Exception &e) {
-		errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
-		myFunc::writeLog(errMsg);
-        myFunc::writeLog(wxT("Таблица: ") + tblHistoryBattery + wxT("; Req = \"") + request + wxT("\""));
-        return false;
-	}
-	return true;
-}
+
 std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 {
 	if (numTable < tblSource.size()) {
