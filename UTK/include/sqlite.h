@@ -118,11 +118,7 @@ public:
 	bool isHaveBattery(wxString numUnit);
 
 	//Проверка корректности названия столбцов
-	bool checkSource(wxString tableName);
-	bool checkWork(wxString tableName);
-	bool checkRepair(wxString tableName);
-	bool checkBattery(wxString tableName);
-	bool checkHistoryBattery(wxString tableName);
+    bool checkTable(wxString tableName, std::vector<field> lFields);
 
 	bool getDbIsCorrect();
 	//Оператор присваивания
@@ -143,10 +139,13 @@ private:
 	wxString tblRepair;			//Таблица ремонта
 	wxString tblBattery;		//Рабочая таблица для аккумуляторов
 	wxString tblHistoryBattery;	//История использования
+    wxString tblBindUnits;		//Таблица для связи логинов и техники
 	wxString loginRemont;		//Логин для ремонта
 	wxString errMsg;
 	std::vector<wxString> sortWork;	//Вывод всех\в работе
-	std::vector<field> fields;	//Поля таблицы
+    std::vector<field> fields;	//Поля основной таблицы
+    std::vector<field> mSrcFields;
+    std::vector<field> mBindFields;
 	std::vector<field> mBatteryFields;
 	std::vector<field> mHistoryBatteryFields;
 	Column column;

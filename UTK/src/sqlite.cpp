@@ -41,30 +41,30 @@ bool MyDB::iniTDB(wxString name)
 	}
 	//Проверка, что в таблице имеются нужные поля
 	for (auto tableName : tblSource) {
-		if (!checkSource(tableName)) {
+        if (!checkTable(tableName, mSrcFields)) {
 			errMsg = "Error in source table: " + tableName;
 			myFunc::writeLog(errMsg);
 			return false;
 		}
 	}
 	for (auto tableName : tblWork) {
-		if (!checkWork(tableName)) {
+        if (!checkTable(tableName, fields)) {
 			errMsg = "Error in work table: " + tableName;
 			myFunc::writeLog(errMsg);
 			return false;
 		}
 	}
-	if (!checkRepair(tblRepair)) {
+    if (!checkTable(tblRepair, fields)) {
 		errMsg = "Error in repair table: " + tblRepair;
 		myFunc::writeLog(errMsg);
 		return false;
 	}
-	if (!checkBattery(tblBattery)) {
+    if (!checkTable(tblBattery, mBatteryFields)) {
 		errMsg = "Error in repair table: " + tblBattery;
 		myFunc::writeLog(errMsg);
 		return false;
 	}
-	if (!checkHistoryBattery(tblHistoryBattery)) {
+    if (!checkTable(tblHistoryBattery, mHistoryBatteryFields)) {
 		errMsg = "Error in repair table: " + tblHistoryBattery;
 		myFunc::writeLog(errMsg);
 		return false;
@@ -343,7 +343,10 @@ void MyDB::initVar()
 	fields.push_back(column.status);
 	fields.push_back(column.nameUnit);
 	fields.push_back(column.whoOutput);
-
+    mSrcFields.push_back(column.numUnit);
+    mSrcFields.push_back(column.nameUnit);
+    mBindFields.push_back(column.numUnit);
+    mBindFields.push_back(column.login);
 	mBatteryFields.push_back(column.numUnit);
 	mBatteryFields.push_back(column.status);
 	mBatteryFields.push_back(column.dateIn);
@@ -779,7 +782,7 @@ bool MyDB::createSourceTable()
 {
 	for (auto sourceTable : tblSource) {
 		if (db.TableExists(sourceTable)) {
-			if (checkSource(sourceTable)) continue;
+            if (checkTable(sourceTable, mSrcFields)) continue;
 			else return false;
 		}
 		wxString request = wxT("CREATE TABLE ") + sourceTable + wxT("(ID INTEGER primary key, \"") +
@@ -800,7 +803,7 @@ bool MyDB::createWorkTable() {
 	for (auto workTable : tblWork) {
 		//Таблица существует
 		if (db.TableExists(workTable)) {
-			if (checkWork(workTable)) continue;	//Проверяем корректность и продолжаем
+            if (checkTable(workTable, fields)) continue;	//Проверяем корректность и продолжаем
 			else return false;
 		}
 		//Делаем новую
@@ -823,7 +826,7 @@ bool MyDB::createWorkTable() {
 }
 bool MyDB::createRepairTable() {
 	if (db.TableExists(tblRepair)) {
-		if (checkWork(tblRepair)) return true;	//Проверяем корректность
+        if (checkTable(tblRepair, fields)) return true;	//Проверяем корректность
 		else return false;
 	}
 	//Если таблицы не существует
@@ -846,7 +849,7 @@ bool MyDB::createRepairTable() {
 }
 bool MyDB::createBatteryTable() {
 	if (db.TableExists(tblBattery)) {
-		if (checkBattery(tblBattery)) return true;
+        if (checkTable(tblBattery, mBatteryFields)) return true;
 		else return false;
 	}
 	wxString request = wxT("CREATE TABLE ") + tblBattery + wxT("(ID INTEGER primary key");
@@ -867,7 +870,7 @@ bool MyDB::createBatteryTable() {
 }
 bool MyDB::createHistoryBatteryTable() {
 	if (db.TableExists(tblHistoryBattery)) {
-		if (checkHistoryBattery(tblHistoryBattery)) return true;
+        if (checkTable(tblHistoryBattery, mHistoryBatteryFields)) return true;
 		else return false;
 	}
 	wxString request = wxT("CREATE TABLE ") + tblHistoryBattery + wxT("(ID INTEGER primary key");
@@ -899,7 +902,6 @@ std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 				answer.push_back(std::vector<wxString>(result.GetColumnCount()));
 				for (auto i = 0; i < result.GetColumnCount(); i++) {
 					answer[iter][i] = result.GetAsString(i);
-					std::cerr << iter << answer[iter][i] << std::endl;
 				}
 				iter++;
 			}
@@ -1106,133 +1108,28 @@ bool MyDB::isHaveBattery(wxString numUnit) {
 	}
 	return false;
 }
-bool MyDB::checkSource(wxString tableName) {
-	//Делаем запрос в таблицу
-	wxString sqlRequest = wxT("SELECT * FROM \"") + tableName + wxT("\";");
-	wxSQLite3ResultSet result = db.ExecuteQuery(sqlRequest);
-	//Сохраняем заголовки
-	std::vector<wxString> answer;
-	for (int i = 0; i < result.GetColumnCount(); i++) {
-		answer.push_back(result.GetColumnName(i));
-	}
-	//Сверяем нужные заголовки
-	auto tmpFields = column;		//Для захвата в лямбда
-	std::vector<std::vector<wxString>::iterator> vec;
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.nameUnit.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.numUnit.name; }));
-	//auto it = std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.nameUnit.name; });
-	for (auto it : vec) {
-		if (it == answer.end()) {
-			errMsg = wxT("Таблица <") + tableName + wxT("> с исходными данными не корректна");
-			return false;
-		}
-	}
-	return true;
+bool MyDB::checkTable(wxString tableName, std::vector<field> lFields){
+    wxString sqlRequest = wxT("SELECT * FROM \"") + tableName + wxT("\";");
+    wxSQLite3ResultSet result = db.ExecuteQuery(sqlRequest);
+    //Сохраняем заголовки
+    std::vector<wxString> answer;
+    for (int i = 0; i < result.GetColumnCount(); i++) {
+        answer.push_back(result.GetColumnName(i));
+    }
+    //Сверяем нужные заголовки
+    std::vector<std::vector<wxString>::iterator> vec;
+    for(auto x: lFields){
+        vec.push_back(std::find_if(answer.begin(), answer.end(), [x](auto element){return element == x.name;}));
+    }
+    for(auto it : vec){
+        if(it == answer.end()){
+            errMsg = wxT("Таблица <") + tableName + wxT("> не корректна. Выберите другую БД");
+            return false;
+        }
+    }
+    return true;
 }
-bool MyDB::checkWork(wxString tableName) {
-	//Делаем запрос в таблицу
-	wxString sqlRequest = wxT("SELECT * FROM \"") + tableName + wxT("\";");
-	wxSQLite3ResultSet result = db.ExecuteQuery(sqlRequest);
-	//Сохраняем заголовки
-	std::vector<wxString> answer;
-	for (int i = 0; i < result.GetColumnCount(); i++) {
-		answer.push_back(result.GetColumnName(i));
-	}
-	//Сверяем нужные заголовки
-	auto tmpFields = column;		//Для захвата в лямбда
-	std::vector<std::vector<wxString>::iterator> vec;
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.numUnit.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.login.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.numHours.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.dateOut.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.dateIn.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.timeInWork.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.status.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.nameUnit.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.whoOutput.name; }));
 
-	for (auto it : vec) {
-		if (it == answer.end()) {
-			errMsg = wxT("Рабочая таблица <") + tableName + wxT("> не корректна. Выберите другую БД");
-			return false;
-		}
-	}
-	return true;
-}
-bool MyDB::checkRepair(wxString tableName) {
-	//Делаем запрос в таблицу
-	wxString sqlRequest = wxT("SELECT * FROM \"") + tableName + wxT("\";");
-	wxSQLite3ResultSet result = db.ExecuteQuery(sqlRequest);
-	//Сохраняем заголовки
-	std::vector<wxString> answer;
-	for (int i = 0; i < result.GetColumnCount(); i++) {
-		answer.push_back(result.GetColumnName(i));
-	}
-	//Сверяем нужные заголовки
-	auto tmpFields = column;		//Для захвата в лямбда
-	std::vector<std::vector<wxString>::iterator> vec;
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.numUnit.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.login.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.numHours.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.dateOut.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.dateIn.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.timeInWork.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.status.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.nameUnit.name; }));
-	vec.push_back(std::find_if(answer.begin(), answer.end(), [tmpFields](auto element) {return element == tmpFields.whoOutput.name; }));
-
-	for (auto it : vec) {
-		if (it == answer.end()) {
-			errMsg = wxT("Таблица <") + tableName + wxT("> не корректна. Выберите другую БД");
-			return false;
-		}
-	}
-	return true;
-}
-bool MyDB::checkBattery(wxString tableName) {
-	//Делаем запрос в таблицу
-	wxString sqlRequest = wxT("SELECT * FROM \"") + tableName + wxT("\";");
-	wxSQLite3ResultSet result = db.ExecuteQuery(sqlRequest);
-	//Сохраняем заголовки
-	std::vector<wxString> answer;
-	for (int i = 0; i < result.GetColumnCount(); i++) {
-		answer.push_back(result.GetColumnName(i));
-	}
-	//Сверяем нужные заголовки
-	std::vector<std::vector<wxString>::iterator> vec;
-	for (auto x : mBatteryFields) {
-		vec.push_back(std::find_if(answer.begin(), answer.end(), [x](auto element) {return element == x.name; }));
-	}
-	for (auto it : vec) {
-		if (it == answer.end()) {
-			errMsg = wxT("Таблица <") + tableName + wxT("> не корректна. Выберите другую БД");
-			return false;
-		}
-	}
-	return true;
-}
-bool MyDB::checkHistoryBattery(wxString tableName) {
-	//Делаем запрос в таблицу
-	wxString sqlRequest = wxT("SELECT * FROM \"") + tableName + wxT("\";");
-	wxSQLite3ResultSet result = db.ExecuteQuery(sqlRequest);
-	//Сохраняем заголовки
-	std::vector<wxString> answer;
-	for (int i = 0; i < result.GetColumnCount(); i++) {
-		answer.push_back(result.GetColumnName(i));
-	}
-	//Сверяем нужные заголовки
-	std::vector<std::vector<wxString>::iterator> vec;
-	for (auto x : mHistoryBatteryFields) {
-		vec.push_back(std::find_if(answer.begin(), answer.end(), [x](auto element) {return element == x.name; }));
-	}
-	for (auto it : vec) {
-		if (it == answer.end()) {
-			errMsg = wxT("Таблица <") + tableName + wxT("> не корректна. Выберите другую БД");
-			return false;
-		}
-	}
-	return true;
-}
 bool MyDB::getDbIsCorrect()
 {
 	return dbIsCorrect;
