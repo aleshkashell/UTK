@@ -1,4 +1,4 @@
-#include "gridFrameBinds.h"
+﻿#include "gridFrameBinds.h"
 gridFrameBinds::gridFrameBinds(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size, long style, const wxString & name):
     GridFrameBase(parent, id, pos, size, style, name)
 {

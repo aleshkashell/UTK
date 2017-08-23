@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="include\AboutDialog.h" />
     <ClInclude Include="include\addNewRow.h" />
+    <ClInclude Include="include\AddRowDialogBind.h" />
     <ClInclude Include="include\BatteryPanel.h" />
     <ClInclude Include="include\Definitions.h" />
     <ClInclude Include="include\delClass.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="include\gridFrame.h" />
     <ClInclude Include="include\GridFrameBase.h" />
     <ClInclude Include="include\gridFrameBattery.h" />
+    <ClInclude Include="include\gridFrameBinds.h" />
     <ClInclude Include="include\gridFrameSource.h" />
     <ClInclude Include="include\logFile.h" />
     <ClInclude Include="include\main.h" />
@@ -149,12 +151,14 @@
   <ItemGroup>
     <ClCompile Include="src\AboutDialog.cpp" />
     <ClCompile Include="src\addNewRow.cpp" />
+    <ClCompile Include="src\AddRowDialogBind.cpp" />
     <ClCompile Include="src\BatteryPanel.cpp" />
     <ClCompile Include="src\delClass.cpp" />
     <ClCompile Include="src\extradition.cpp" />
     <ClCompile Include="src\gridFrame.cpp" />
     <ClCompile Include="src\GridFrameBase.cpp" />
     <ClCompile Include="src\gridFrameBattery.cpp" />
+    <ClCompile Include="src\gridFrameBinds.cpp" />
     <ClCompile Include="src\gridFrameSource.cpp" />
     <ClCompile Include="src\logFile.cpp" />
     <ClCompile Include="src\main.cpp" />

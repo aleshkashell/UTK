@@ -72,6 +72,12 @@
     <ClInclude Include="include\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AddRowDialogBind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gridFrameBinds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AboutDialog.cpp">
@@ -120,6 +126,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utkGuiFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AddRowDialogBind.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gridFrameBinds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

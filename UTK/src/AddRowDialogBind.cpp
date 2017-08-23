@@ -1,4 +1,4 @@
-#include "AddRowDialogBind.h"
+﻿#include "AddRowDialogBind.h"
 
 AddRowDialogBind::AddRowDialogBind(wxWindow *parent, wxString lSN, wxString lLogin, wxString lNumUnit)
     : wxDialog(parent, wxID_ANY, wxT("Добавить строку"))

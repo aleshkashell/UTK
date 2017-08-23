@@ -41,7 +41,8 @@ bool GridFrameBase::writeTable(std::vector<std::vector<wxString>> &rows) {
 bool GridFrameBase::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc)
 {
     wxMessageBox(wxT("Wri teTableHelper base class"));
-    }
+	return true;
+}
 void GridFrameBase::Update() {
     writeTableHelp(mRows, mSortField, mAsc);
 }

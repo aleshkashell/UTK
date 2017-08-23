@@ -1,7 +1,7 @@
 #include "SQLiteTable.h"
 
 SQLiteTable::SQLiteTable(wxSQLite3Database *lDB, std::vector<wxString> lTblUnit, std::vector<wxString> lTblSource, std::vector<field> lUnitFields, std::vector<field> lSourceFields){
-    mDb = lDb;
+    mDb = lDB;
     mTblUnit = lTblUnit;
     mTblSource = lTblSource;
     mUnitFields = lUnitFields;
