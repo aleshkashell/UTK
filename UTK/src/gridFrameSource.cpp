@@ -16,7 +16,7 @@ bool gridFrameSource::writeTable(std::vector<std::vector<wxString>> &rows){
 	if (writeTableHelp(mRows, mSortField, mAsc)) return true;
 	return false;
 }
-bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, int asc) {
+bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc) {
 	//Выбор количества строк для отрисовки
 	if (rows.size() > this->GetNumberRows()){
 		this->AppendRows(rows.size() - this->GetNumberRows());

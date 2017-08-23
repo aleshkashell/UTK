@@ -24,9 +24,9 @@ bool MyDB::createAndCheckAllTable(){
     if(!createTable(tblRepair, fields)) return false;
     if(!createTable(tblBattery, mBatteryFields)) return false;
     if(!createTable(tblHistoryBattery, mHistoryBatteryFields)) return false;
+    if(!createTable(tblBindUnits, mBindFields)) return false;
     return true;
 }
-
 bool MyDB::iniTDB(wxString name)
 {
 	if (db.IsOpen())
@@ -317,6 +317,7 @@ void MyDB::initVar()
 	fields.push_back(column.whoOutput);
     mSrcFields.push_back(column.numUnit);
     mSrcFields.push_back(column.nameUnit);
+    mBindFields.push_back(column.serialNumber);
     mBindFields.push_back(column.numUnit);
     mBindFields.push_back(column.login);
 	mBatteryFields.push_back(column.numUnit);
@@ -328,7 +329,6 @@ void MyDB::initVar()
 	mBatteryFields.push_back(column.whoInput);
 	mBatteryFields.push_back(column.whoOutput);
 	mBatteryFields.push_back(column.nameUnit);
-
 	mHistoryBatteryFields.push_back(column.numUnit);
 	mHistoryBatteryFields.push_back(column.status);
 	mHistoryBatteryFields.push_back(column.dateIn);
@@ -672,84 +672,6 @@ void MyDB::WriteList(lxw_workbook  *workbook, wxString tableName, std::vector<do
 	for (auto iter = 0; iter < sizeColumnExcelTable.size(); iter++)
 		worksheet_set_column(worksheet, iter, iter, sizeColumnExcelTable[iter], NULL);
 }
-/*
-bool MyDB::exportXLSX(wxString path)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv1;	//Для конвертации русских символов
-	std::vector<std::vector<wxString>> result;
-	//result = getAll();
-
-	xlnt::workbook wb;
-	xlnt::worksheet ws2 = wb.active_sheet();
-	for (auto tableName : tblWork) {
-		xlnt::worksheet ws = wb.create_sheet();
-		ws.title(conv1.to_bytes(tableName.ToStdWstring()));
-
-		///Настройка ширины колонн
-		std::vector<int> colWidth = { 4, 11, 20, 17, 19, 19, 14, 9, 30 };
-		auto width = ws.column_properties(1).width;
-		auto style = ws.column_properties(1).style;
-		auto custom = ws.column_properties(1).custom;
-		int iter = 1;
-		for (auto len : colWidth) {
-			xlnt::column_properties props1;
-			props1.width = len;
-			props1.style = style;
-			props1.custom = custom;
-			ws.add_column_properties(iter, props1);
-			iter++;
-		}
-		///
-		result = getAll(tableName);
-		for (auto row : result)
-		{
-			std::vector<std::string> row_ansi;
-			for (auto word : row)
-			{
-				std::wstring str = word.ToStdWstring();
-				std::string str_ansi = conv1.to_bytes(str);
-				row_ansi.push_back(str_ansi);
-			}
-			ws.append(row_ansi);
-		}
-		///Рамки ячеек
-		xlnt::border myBorder;
-		xlnt::border::border_property proper;
-		//Стиль линии
-		proper.style(xlnt::border_style::thin);
-		//Цвет линии
-		proper.color(xlnt::color::black());
-		//Стиль устанавливается для каждой границы
-		myBorder = myBorder.side(xlnt::border_side::end, proper);
-		myBorder = myBorder.side(xlnt::border_side::bottom, proper);
-		myBorder = myBorder.side(xlnt::border_side::start, proper);
-		myBorder = myBorder.side(xlnt::border_side::top, proper);
-		//Установка рамок для ячеек
-		auto numRow = ws.highest_row();
-		auto numCol = ws.highest_column();
-
-		for (auto r = 1; r <= numRow; r++) {
-			for (auto c = 1; c <= numCol; c++) {
-				ws.cell(c, r).border(myBorder);
-			}
-		}
-	}
-	wb.remove_sheet(ws2);
-	
-
-	
-	std::wstring str = path.ToStdWstring();
-	std::string path_ansi = conv1.to_bytes(str);
-	try {
-		wb.save(path_ansi);
-	}
-	catch (std::exception &e) {
-		errMsg = e.what();
-		myFunc::writeLog(errMsg);
-		return false;
-	}
-	return true;
-}*/
 bool MyDB::createTable(wxString tableName, std::vector<field> lFields){
     //Если таблица существует
     if(db.TableExists(tableName)){
@@ -777,7 +699,6 @@ bool MyDB::createTable(wxString tableName, std::vector<field> lFields){
     return true;
 
 }
-
 std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 {
 	if (numTable < tblSource.size()) {
@@ -800,11 +721,11 @@ std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 			errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
 			myFunc::writeLog(errMsg);
 		}
-	}
-	else {
+    }
+    else if(numTable == tblSource.size()){
 		wxString request = wxT("SELECT * FROM ") + tblBattery;
 		wxSQLite3ResultSet result;
-		int numColumn = 3;	//Количество колонок для загрузки (ID, имя, имя техники)
+//		int numColumn = 3;	//Количество колонок для загрузки (ID, имя, имя техники)
 		std::vector<std::vector<wxString>> answer;
 		try {
 			result = db.ExecuteQuery(request);
@@ -819,7 +740,27 @@ std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 			errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
 			myFunc::writeLog(errMsg);
 		}
-	}
+    }
+    else {
+        wxString request = wxT("SELECT * FROM ") + tblBindUnits;
+        wxSQLite3ResultSet result;
+        std::vector<std::vector<wxString>> answer;
+        try {
+            result = db.ExecuteQuery(request);
+            while (result.NextRow()) {
+                answer.push_back(std::vector<wxString>{
+                    //0 - ID
+                    result.GetAsString(1), result.GetAsString(2), result.GetAsString(3)
+                });
+            }
+            return answer;
+        }
+        catch (wxSQLite3Exception &e) {
+            errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+            myFunc::writeLog(errMsg);
+        }
+
+    }
 }
 bool MyDB::removeUnit(wxString numUnit, int numTable)
 {
@@ -1018,7 +959,6 @@ bool MyDB::checkTable(wxString tableName, std::vector<field> lFields){
     }
     return true;
 }
-
 bool MyDB::getDbIsCorrect()
 {
 	return dbIsCorrect;

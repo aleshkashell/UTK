@@ -5,8 +5,6 @@
 
 utkGuiFrame::utkGuiFrame(const wxString &title): wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 500), wxDEFAULT_FRAME_STYLE)
 {
-    myFunc::logToStd(wxT("This is debug cout line"));
-    myFunc::logToCerr(wxT("This is cerr line"));
 	StableIniT();
 	DynInit();
 	preTableUpdate();
@@ -66,7 +64,7 @@ void utkGuiFrame::StableIniT() {
 	mBatteryGrid = new gridFrameBattery(nbGrid, wxID_ANY);
 	nbGrid->AddPage(grid, wxT("Техника в работе"));
 	nbGrid->AddPage(remGrid, wxT("Техника в ремонте"));
-	nbGrid->AddPage(mBatteryGrid, wxT("Список аккумуляторов"));
+    nbGrid->AddPage(mBatteryGrid, wxT("Список аккумуляторов"));
 	//Панели для списков с техникой
 	srcNb = new wxNotebook(this, wxID_ANY);
 	srcEdit = new sourceEditPanel(this, pathOfBD, tblsMachine, tblsList, srcNb);
@@ -119,6 +117,10 @@ void utkGuiFrame::DynInit() {
 	gridFrameSource* tmp = new gridFrameSource(srcNb, wxID_ANY);
 	srcNb->AddPage(tmp, wxT("Аккумуляторы"));
 	mSourceGrid.push_back(tmp);
+    //Добавляем вкладку связанные списки
+    gridFrameBinds* tmp2 = new gridFrameBinds(srcNb, wxID_ANY);
+    srcNb->AddPage(tmp2, wxT("Связанная техника"));
+    mSourceGrid.push_back(tmp2);
 }
 void utkGuiFrame::OnEnterReception(wxCommandEvent& event) {
 	wxCommandEvent eventt(wxEVT_BUTTON, reception::ID_BTNOK);
@@ -225,16 +227,16 @@ void utkGuiFrame::tableUpdate()
 	}
 	else {
 		auto countPage = srcNb->GetPageCount();
-		std::vector<gridFrameSource*> pages;
+        std::vector<GridFrameBase*> pages;
 		for (auto i = 0; i < countPage; i++) {
-			pages.push_back(dynamic_cast<gridFrameSource*>(srcNb->GetPage(i)));
+            pages.push_back(dynamic_cast<GridFrameBase*>(srcNb->GetPage(i)));
 		}
 		for(auto i = 0; i < countPage; i++){
 			result = db->getSourceUnit(i);
 			pages[i]->ClearGrid();
 			if (result.size() != 0) {
 				if (!pages[i]->writeTable(result))
-					wxMessageBox(wxT("Данные не записались"));
+                    wxMessageBox(wxT("Данные не записались"));
 			}
 		}
 	}

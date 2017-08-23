@@ -15,9 +15,11 @@
 #include "reception.h"
 #include "extradition.h"
 #include "BatteryPanel.h"
+#include "GridFrameBase.h"
 #include "gridFrame.h"
 #include "gridFrameSource.h"
 #include "gridFrameBattery.h"
+#include "gridFrameBinds.h"
 #include "sourceEditPanel.h"
 #include "SettingsDialog.h"
 #include "AboutDialog.h"
@@ -77,13 +79,15 @@ class utkGuiFrame : public wxFrame
 		//Таблица со списком батарей
 		gridFrameSource *sourceBattery;
 		//Таблицы со списком техники
-		std::vector<gridFrameSource*> mSourceGrid;
+        std::vector<GridFrameBase*> mSourceGrid;
+        //Таблица с связанными данными
+        gridFrameBinds *mBindGrid;
 		//Панелька с вводом данных
 		wxNotebook *nb;
 		//Панель с таблицами выданной техники
 		wxNotebook *nbGrid;
 		//Панель с исходными таблицами
-		wxNotebook *srcNb;
+        wxNotebook *srcNb;
 		//Панель редактирования исходной таблицы
 		sourceEditPanel *srcEdit;
 		//таймер обновления

@@ -43,8 +43,9 @@ public:
 		whoOutput = field(wxT("Выдал"), wxT("TEXT"));
 		whoInput = field(wxT("Принял"), wxT("TEXT"));
 		timeCharge = field(wxT("Время заряда"), wxT("INTEGER"));
+        serialNumber = field(wxT("Порядковый номер"), wxT("TEXT"));
 	}
-	field numUnit, login, numHours, dateOut, dateIn, timeInWork, status, nameUnit, whoOutput, whoInput, timeCharge;
+    field numUnit, login, numHours, dateOut, dateIn, timeInWork, status, nameUnit, whoOutput, whoInput, timeCharge, serialNumber;
 };
 class BatteryColumn
 {
