@@ -7,15 +7,25 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -D_DEBUG")
 add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1 -D_CRT_NON_CONFORMING_SWPRINTFS=1 -D_SCL_SECURE_NO_WARNINGS=1 -DNDEBUG -D_UNICODE -DNOPCH -D_XKEYCHECK_H)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../UTK/src ${CMAKE_CURRENT_SOURCE_DIR}/../UTK/include /usr/local/include/nlohmann)
 
-set(MY_SRC "../UTK/src/main.cpp" "../UTK/include/main.h" "../UTK/src/AboutDialog.cpp" "../UTK/include/AboutDialog.h" "../UTK/src/addNewRow.cpp"
-        "../UTK/include/addNewRow.h" "../UTK/include/Definitions.h" "../UTK/src/gridFrameSource.cpp" "../UTK/include/gridFrameSource.h"
-        "../UTK/src/SettingsDialog.cpp" "../UTK/include/SettingsDialog.h" "../UTK/src/sourceEditPanel.cpp"
-        "../UTK/include/sourceEditPanel.h" "../UTK/src/utkGuiFrame.cpp" "../UTK/include/utkGuiFrame.h" "../UTK/include/extradition.h"
-        "../UTK/include/gridFrame.h" "../UTK/include/logFile.h" "../UTK/include/reception.h" "../UTK/include/sqlite.h"
-        "../UTK/src/gridFrame.cpp" "../UTK/src/logFile.cpp" "../UTK/src/reception.cpp" "../UTK/src/sqlite.cpp" "../UTK/src/extradition.cpp"
-        "../UTK/include/GridFrameBase.h" "../UTK/src/GridFrameBase.cpp" "../UTK/include/BatteryPanel.h" "../UTK/src/BatteryPanel.cpp"
-        "../UTK/include/gridFrameBattery.h" "../UTK/src/gridFrameBattery.cpp" "../UTK/include/gridFrameBinds.h"
-        "../UTK/src/gridFrameBinds.cpp" "../UTK/history.txt")
+set(MY_SRC "../UTK/src/main.cpp" 		"../UTK/include/main.h"
+        "../UTK/src/AboutDialog.cpp"		"../UTK/include/AboutDialog.h"
+        "../UTK/src/addNewRow.cpp"		"../UTK/include/addNewRow.h"
+        "../UTK/src/gridFrameSource.cpp"        "../UTK/include/gridFrameSource.h"
+        "../UTK/src/SettingsDialog.cpp"		"../UTK/include/SettingsDialog.h"
+        "../UTK/src/sourceEditPanel.cpp"        "../UTK/include/sourceEditPanel.h"
+        "../UTK/src/utkGuiFrame.cpp"		"../UTK/include/utkGuiFrame.h"
+        "../UTK/src/extradition.cpp"		"../UTK/include/extradition.h"
+        "../UTK/src/gridFrame.cpp"		"../UTK/include/gridFrame.h"
+        "../UTK/src/logFile.cpp"		"../UTK/include/logFile.h"
+        "../UTK/src/reception.cpp"		"../UTK/include/reception.h"
+        "../UTK/src/sqlite.cpp"			"../UTK/include/sqlite.h"
+        "../UTK/src/GridFrameBase.cpp"		"../UTK/include/GridFrameBase.h"
+        "../UTK/src/BatteryPanel.cpp" 		"../UTK/include/BatteryPanel.h"
+        "../UTK/src/gridFrameBattery.cpp"	"../UTK/include/gridFrameBattery.h"
+        "../UTK/src/gridFrameBinds.cpp"		"../UTK/include/gridFrameBinds.h"
+        "../UTK/src/AddRowDialogBind.cpp"	"../UTK/include/AddRowDialogBind.h"
+        "../UTK/history.txt"			"../UTK/include/Definitions.h"
+        )
     message("${MY_SRC}")
 
 add_executable(${PROJECT_NAME} ${MY_SRC})

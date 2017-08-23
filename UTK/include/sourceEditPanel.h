@@ -6,6 +6,8 @@
 #include <wx/button.h>
 #include <wx/notebook.h>
 #include "gridFrameSource.h"
+#include "gridFrameBinds.h"
+#include "AddRowDialogBind.h"
 #include "addNewRow.h"
 #include "sqlite.h"
 

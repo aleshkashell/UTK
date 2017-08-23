@@ -131,14 +131,22 @@ void utkGuiFrame::OnRecBtnOK(wxCommandEvent &event) {
 		wxMessageBox(wxT("Не указан номер техники."));
 		return;
 	}
-	if (recPanel->getTxtNumHours() == 0) {
-		wxMessageBox(wxT("Не указаны моточасы."));
-		return;
-	}
-	if (!db->inputUnit(recPanel->getTxtNumTS(), recPanel->getTxtNumHours())) {
-		wxMessageBox(db->getErrMsg());
-		return;
-	}
+    if(recPanel->getTxtNumTS().StartsWith("$")){
+        if(!db->inputUnit(recPanel->getTxtNumTS())){
+            wxMessageBox(db->getErrMsg());
+            return;
+        }
+    }
+    else{
+        if (recPanel->getTxtNumHours() == 0) {
+            wxMessageBox(wxT("Не указаны моточасы."));
+            return;
+        }
+        if (!db->inputUnit(recPanel->getTxtNumTS(), recPanel->getTxtNumHours())) {
+            wxMessageBox(db->getErrMsg());
+            return;
+        }
+    }
 	tableUpdate();
 	recPanel->ClearAll();
 }
@@ -151,15 +159,23 @@ void utkGuiFrame::OnExtBtnOK(wxCommandEvent& event) {
 		wxMessageBox(wxT("Логин не может быть пустым."));
 		return;
 	}
-	if (extPanel->getTxtNumTS() == "") {
-		wxMessageBox(wxT("Номер техники не может быть пустым"));
-		return;
-	}
-	if (!db->outputUnit(extPanel->getTxtLogin(), extPanel->getTxtNumTS())) {
-		wxMessageBox(db->getErrMsg());
-		tableUpdate();
-		return;
-	}
+    if(extPanel->getTxtLogin().StartsWith("$")){
+        if(!db->outputUnit(extPanel->getTxtLogin())){
+            wxMessageBox(db->getErrMsg());
+            return;
+        }
+    }
+    else{
+        if (extPanel->getTxtNumTS() == "") {
+            wxMessageBox(wxT("Номер техники не может быть пустым"));
+            return;
+        }
+        if (!db->outputUnit(extPanel->getTxtLogin(), extPanel->getTxtNumTS())) {
+            wxMessageBox(db->getErrMsg());
+            tableUpdate();
+            return;
+        }
+    }
 	tableUpdate();
 	extPanel->ClearAll();
 }

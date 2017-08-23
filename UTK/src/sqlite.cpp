@@ -5,6 +5,7 @@ MyDB::MyDB(wxString name, std::vector<wxString> tblMachine, std::vector<wxString
 	tblSource = tblList;
 	tblWork = tblMachine;
     tblRepair = wxT("Ремонт");
+    tblBindUnits = wxT("Связанная техника");
     tblBattery = wxT("Аккумуляторы_тек");
     tblHistoryBattery = wxT("Аккумуляторы");
     loginRemont = wxT("remont");
@@ -87,7 +88,7 @@ bool MyDB::outputUnit(wxString login, wxString numUnit)
 			}
 		}
 		//Для таблицы ремонта
-		wxString sqlRequestRem = wxT("select count(ID) from ") + tblRepair + wxT(" where \"") + column.numUnit.name + wxT("\" = \"") + numUnit +
+        wxString sqlRequestRem = wxT("select count(ID) from \"") + tblRepair + wxT("\" where \"") + column.numUnit.name + wxT("\" = \"") + numUnit +
 			wxT("\" and \"") + column.status.name + wxT("\" = \"в ремонте\";");
 		//Проверка, что техника не выдана.
 		if (db.ExecuteScalar(sqlRequestRem) != 0)
@@ -135,6 +136,11 @@ bool MyDB::outputUnit(wxString login, wxString numUnit)
 		return false;
 	}
 }
+bool MyDB::outputUnit(wxString lSN){
+    auto answer = getBinds(lSN);
+    if(answer == errorBind) return false;
+    return outputUnit(answer.login, answer.numUnit);
+}
 bool MyDB::outputBattery(wxString numUnit) {
 	try {
 		wxString sqlRequest = wxT("UPDATE \"") + tblBattery + wxT("\" SET \"") + column.dateOut.name + wxT("\" = \"") + getNowDate() +
@@ -166,7 +172,6 @@ wxString MyDB::getStatusBattery(wxString numUnit) {
 	catch (wxSQLite3Exception &e)
 	{
 		errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
-		myFunc::writeLog(errMsg);
 		return wxT("error SQL");
 	}
 }
@@ -208,6 +213,25 @@ wxString MyDB::getUserName()
 #endif
     return wxString(wxT("Unknown system"));
 }
+Binds MyDB::getBinds(wxString lSN){
+    if(!isHaveBindSN(lSN)) return errorBind;
+    wxString sqlRequest = wxT("SELECT \"") + column.login.name + wxT("\", \"") + column.numUnit.name +
+            wxT("\" FROM \"") + tblBindUnits + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") +
+            lSN + wxT("\"");
+    try{
+        auto result = db.ExecuteQuery(sqlRequest);
+        result.NextRow();
+        return Binds(result.GetAsString(0), result.GetAsString(1));
+    }
+    catch(wxSQLite3Exception &e)
+    {
+        errMsg =  e.GetErrorCode() + wxT(":") + e.GetMessage();
+        myFunc::writeLog(errMsg);
+        return errorBind;
+    }
+
+}
+
 std::vector<std::vector<wxString>> MyDB::getAllNeed(bool onlyInWork)
 {
 	try
@@ -302,6 +326,7 @@ std::vector<std::vector<wxString>> MyDB::getBatteryList() {
 }
 void MyDB::initVar()
 {
+    errorBind = Binds(wxT("NOTHING"), wxT("NOTHING"));
 	userName = getUserName();
 	sortWork.push_back("");
 	sortWork.push_back(wxT(" WHERE \"") + column.status.name + wxT("\" = \"в работе\""));
@@ -318,8 +343,8 @@ void MyDB::initVar()
     mSrcFields.push_back(column.numUnit);
     mSrcFields.push_back(column.nameUnit);
     mBindFields.push_back(column.serialNumber);
-    mBindFields.push_back(column.numUnit);
     mBindFields.push_back(column.login);
+    mBindFields.push_back(column.numUnit);
 	mBatteryFields.push_back(column.numUnit);
 	mBatteryFields.push_back(column.status);
 	mBatteryFields.push_back(column.dateIn);
@@ -427,6 +452,12 @@ bool MyDB::inputUnit(wxString numUnit, int numHours)
 		return false;
 	}
 }
+bool MyDB::inputUnit(wxString lSN){
+    auto answer = getBinds(lSN);
+    if(answer == errorBind) return false;
+    return inputUnit(answer.numUnit, -1);
+}
+
 bool MyDB::inputBattery(wxString numUnit, wxString numHours) {
 	//Копируем строку в вектор
 	wxSQLite3ResultSet result;
@@ -682,7 +713,7 @@ bool MyDB::createTable(wxString tableName, std::vector<field> lFields){
             return false;
         }
     }
-    wxString request = wxT("CREATE TABLE ") + tableName + wxT("(ID INTEGER primary key");
+    wxString request = wxT("CREATE TABLE \"") + tableName + wxT("\" (ID INTEGER primary key");
     for (auto x : lFields) {
         request += wxT(", \"") + x.name + wxT("\" ") + x.type;
     }
@@ -693,7 +724,7 @@ bool MyDB::createTable(wxString tableName, std::vector<field> lFields){
     catch (wxSQLite3Exception &e) {
         errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
         myFunc::writeLog(errMsg);
-        myFunc::writeLog(wxT("Таблица: ") + tblRepair + wxT("; Req = \"") + request + wxT("\""));
+        myFunc::writeLog(wxT("Таблица: ") + tableName + wxT("; Req = \"") + request + wxT("\""));
         return false;
     }
     return true;
@@ -702,7 +733,7 @@ bool MyDB::createTable(wxString tableName, std::vector<field> lFields){
 std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 {
 	if (numTable < tblSource.size()) {
-		wxString request = wxT("SELECT * FROM ") + tblSource[numTable];
+        wxString request = wxT("SELECT * FROM \"") + tblSource[numTable] + wxT("\"");
 		wxSQLite3ResultSet result;
 		std::vector<std::vector<wxString>> answer;
 		try {
@@ -723,7 +754,7 @@ std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 		}
     }
     else if(numTable == tblSource.size()){
-		wxString request = wxT("SELECT * FROM ") + tblBattery;
+        wxString request = wxT("SELECT * FROM \"") + tblBattery + wxT("\"");
 		wxSQLite3ResultSet result;
 //		int numColumn = 3;	//Количество колонок для загрузки (ID, имя, имя техники)
 		std::vector<std::vector<wxString>> answer;
@@ -742,7 +773,7 @@ std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
 		}
     }
     else {
-        wxString request = wxT("SELECT * FROM ") + tblBindUnits;
+        wxString request = wxT("SELECT * FROM \"") + tblBindUnits + wxT("\"");
         wxSQLite3ResultSet result;
         std::vector<std::vector<wxString>> answer;
         try {
@@ -780,6 +811,19 @@ bool MyDB::removeUnit(wxString numUnit, int numTable)
 		return removeBattery(numUnit);
 	}
 }
+bool MyDB::removeBind(wxString lSN){
+    wxString sqlRequest = wxT("DELETE FROM \"") + tblBindUnits + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") + lSN + wxT("\"");
+    try {
+        db.ExecuteUpdate(sqlRequest);
+        return true;
+    }
+    catch (wxSQLite3Exception &e) {
+        errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+        myFunc::writeLog(errMsg);
+        return false;
+    }
+}
+
 bool MyDB::removeBattery(wxString numUnit) {
 	wxString sqlRequest = wxT("DELETE FROM ") + tblBattery + wxT(" WHERE  \"") + column.numUnit.name + wxT("\" =\"") + numUnit + wxT("\";");
 	try {
@@ -797,7 +841,7 @@ bool MyDB::addUnit(wxString numUnit, wxString nameUnit, int numTable)
 	if (numTable < tblSource.size()) {
 		if (isHave(numUnit)) return false;
 		try {
-			wxString sqlRequest = wxT("INSERT INTO ") + tblSource[numTable] + wxT("(\"") + column.numUnit.name + wxT("\", \"") +
+            wxString sqlRequest = wxT("INSERT INTO ") + tblSource[numTable] + wxT("(\"") + column.numUnit.name + wxT("\", \"") +
 				column.nameUnit.name + wxT("\") VALUES(\"") + numUnit + wxT("\", \"") + nameUnit + wxT("\");");
 			db.ExecuteUpdate(sqlRequest);
 			return true;
@@ -827,6 +871,55 @@ bool MyDB::addBattery(wxString numUnit, wxString nameUnit) {
 		return false;
 	}
 }
+bool MyDB::addBind(wxString lSN, wxString lLogin, wxString numUnit){
+    if(isHaveBindSN(lSN) || isHaveBindLogin(lLogin)) return false;
+    try{
+        wxString sqlRequest = wxT("INSERT INTO \"") + tblBindUnits + wxT("\" (\"") + column.serialNumber.name + wxT("\", \"") +
+                column.login.name + wxT("\", \"") + column.numUnit.name + wxT("\") VALUES(\"") +
+                lSN + wxT("\", \"") + lLogin + wxT("\", \"") + numUnit + wxT("\");");
+        db.ExecuteUpdate(sqlRequest);
+        return true;
+    }
+    catch(wxSQLite3Exception &e){
+        errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+        myFunc::writeLog(errMsg);
+        return false;
+    }
+}
+bool MyDB::editBind(wxString oldSN, wxString oldLogin, wxString lSN, wxString lLogin, wxString numUnit){
+    if(oldSN == lSN){
+        if(oldLogin != lLogin)
+            if(isHaveBindLogin(lLogin)) return false;
+        wxString sqlRequest = wxT("UPDATE \"") + tblBindUnits + wxT("\" SET \"") + column.serialNumber.name + wxT("\" = \"") +
+            lSN + wxT("\", \"") + column.login.name + wxT("\" = \"") + lLogin + wxT("\", \"") + column.numUnit.name +
+            wxT("\" = \"") + numUnit + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") + oldSN + wxT("\"");
+        try{
+            db.ExecuteUpdate(sqlRequest);
+            return true;
+        }
+        catch(wxSQLite3Exception &e){
+            errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+            myFunc::writeLog(errMsg);
+            return false;
+        }
+    }
+    if(oldLogin == lLogin){
+        if(isHaveBindSN(lSN)) return false;
+        wxString sqlRequest = wxT("UPDATE \"") + tblBindUnits + wxT("\" SET \"") + column.serialNumber.name + wxT("\" = \"") +
+            lSN + wxT("\", \"") + column.login.name + wxT("\" = \"") + lLogin + wxT("\", \"") + column.numUnit.name +
+            wxT("\" = \"") + numUnit + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") + oldSN + wxT("\"");
+        try{
+            db.ExecuteUpdate(sqlRequest);
+            return true;
+        }
+        catch(wxSQLite3Exception &e){
+            errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+            myFunc::writeLog(errMsg);
+            return false;
+        }
+    }
+}
+
 bool MyDB::editUnit(wxString oldNum, wxString oldName, wxString numUnit, wxString nameUnit, int numTable) {
 	if (oldNum == numUnit && oldName == nameUnit) return true;
 	if (numTable < tblSource.size()) {
@@ -920,6 +1013,38 @@ bool MyDB::isHave(wxString numUnit)
 		return true;
 	}
 	return false;
+}
+bool MyDB::isHaveBindSN(wxString lSN){
+    try {
+        wxString sqlRequest = wxT("SELECT COUNT(*) FROM \"") + tblBindUnits + wxT("\" WHERE \"") + column.serialNumber.name +
+                wxT("\" = \"") + lSN + wxT("\";");
+        if(db.ExecuteScalar(sqlRequest) > 0){
+            errMsg = wxT("Связь с П/Н \"") + lSN + wxT("\" уже имеется");
+            return true;
+        }
+    }
+    catch (wxSQLite3Exception &e) {
+        errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+        myFunc::writeLog(errMsg);
+        return true;
+    }
+    return false;
+}
+bool MyDB::isHaveBindLogin(wxString lLogin){
+    try {
+        wxString sqlRequest = wxT("SELECT COUNT(*) FROM \"") + tblBindUnits + wxT("\" WHERE \"") + column.login.name +
+                wxT("\" = \"") + lLogin + wxT("\";");
+        if(db.ExecuteScalar(sqlRequest) > 0){
+            errMsg = wxT("Связь с логином \"") + lLogin + wxT("\" уже имеется");
+            return true;
+        }
+    }
+    catch (wxSQLite3Exception &e) {
+        errMsg = e.GetErrorCode() + wxT(":") + e.GetMessage();
+        myFunc::writeLog(errMsg);
+        return true;
+    }
+    return false;
 }
 bool MyDB::isHaveBattery(wxString numUnit) {
 	try {

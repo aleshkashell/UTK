@@ -13,18 +13,6 @@ addNewRow::addNewRow(wxWindow *parent):
 	wxStaticText *lblNumber = new wxStaticText(this, wxID_ANY, wxT("Номер техники:"), wxDefaultPosition, wxSize(100, 15));
 	wxStaticText *lblName = new wxStaticText(this, wxID_ANY, wxT("Имя техники:"), wxDefaultPosition, wxSize(100, 15));
 
-	//hBoxNumber->Add(lblNumber);
-	
-	/*
-	textNumUnit = new wxTextCtrl(this, wxID_ANY);
-	textNameUnit = new wxTextCtrl(this, wxID_ANY);
-	btnOk = new wxButton(this, wxID_OK, wxT("OK"));
-	btnCancel = new wxButton(this, wxID_CANCEL, wxT("Cancel"));
-	vBox->Add(textNumUnit);
-	vBox->Add(textNameUnit);
-	vBox->Add(btnOk);
-	vBox->Add(btnCancel);
-	*/
 	textNumUnit = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxSize(250, 25));
 	textNameUnit = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxSize(250, 25));
 	btnOk = new wxButton(this, wxID_OK, wxT("OK"));

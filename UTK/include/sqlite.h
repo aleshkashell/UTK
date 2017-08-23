@@ -20,7 +20,17 @@
 #elif __LINUX__
     //If linux
 #endif
-
+struct Binds{
+    wxString login;
+    wxString numUnit;
+    Binds(){ login = ""; numUnit = "";}
+    Binds(wxString lLogin, wxString lNumUnit){ login = lLogin; numUnit = lNumUnit;}
+    bool operator ==(Binds& a){
+        if(this->login == a.login && this->numUnit == a.numUnit) return true;
+        return false;
+    }
+    //void operator =(Binds& a){ this->login = a.login; this->numUnit = a.numUnit;}
+};
 struct field
 {
 	field() {}
@@ -69,15 +79,18 @@ public:
 	bool iniTDB(wxString name);
 
 	//Выдача техники
-	bool outputUnit(wxString login, wxString numUnit);
-	//Отправка техники в ремонт
-	bool sendToRepair(wxString numUnit, wxString srcTblName);
+    bool outputUnit(wxString login, wxString numUnit);
+    bool outputUnit(wxString lSN);
+    //Отправка техники в ремонт
+    bool sendToRepair(wxString numUnit, wxString srcTblName);
+    bool sendToRepair(wxString lSN);
 	//Показать весь список техники с заголовками
 	std::vector<std::vector<wxString>> getAll(wxString tableName, bool onlyInWork = false);
 	//Без заголовков
 	std::vector<std::vector<wxString>> getAllNeed(bool onlyInWork = false);
 	std::vector<std::vector<wxString>> getAllNeedRem();
 	std::vector<std::vector<wxString>> getBatteryList();
+    Binds getBinds(wxString lSN);
 	//Выдача батареи
 	bool outputBattery(wxString numUnit);
 	//Приём батареи
@@ -90,6 +103,7 @@ public:
 
 	//Приём техники
 	bool inputUnit(wxString numUnit, int numHours);
+    bool inputUnit(wxString lSN);
 	//Получить ошибку
 	wxString getErrMsg();
 	//Запись результатов в файл
@@ -105,14 +119,19 @@ public:
 	//Удалить технику
 	bool removeUnit(wxString numUnit, int numTable);
 	bool removeBattery(wxString numUnit);
+    bool removeBind(wxString lSN);
 	//Добавить технику
 	bool addUnit(wxString numUnit, wxString nameUnit, int numTable);
-	bool addBattery(wxString numUnit, wxString nameUnit);
+    bool addBattery(wxString numUnit, wxString nameUnit);
+    bool addBind(wxString lSN, wxString lLogin, wxString numUnit);
 	//Редактировать технику
 	bool editUnit(wxString oldNum, wxString oldName, wxString numUnit, wxString nameUnit, int numTable);
-	bool editBattery(wxString oldNum, wxString oldName, wxString numUnit, wxString nameUnit);
+    bool editBattery(wxString oldNum, wxString oldName, wxString numUnit, wxString nameUnit);
+    bool editBind(wxString oldSN, wxString oldLogin, wxString lSN, wxString lLogin, wxString numUnit);
 	//Проверка что техника не существует
 	bool isHave(wxString numUnit);
+    bool isHaveBindSN(wxString lSN);
+    bool isHaveBindLogin(wxString lLogin);
 	bool isHaveBattery(wxString numUnit);
 
 	//Проверка корректности названия столбцов
@@ -148,7 +167,8 @@ private:
 	std::vector<field> mHistoryBatteryFields;
 	Column column;
 	bool dbIsCorrect;
-	wxString userName;
+    wxString userName;
+    Binds errorBind;	//Маркер ошибки
 
 
 };
