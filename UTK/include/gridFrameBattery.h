@@ -10,9 +10,9 @@ class gridFrameBattery :
 {
 public:
 	gridFrameBattery(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString &name = wxGridNameStr);
-	bool writeTable(std::vector<std::vector<wxString>> &rows, int badTime = 13);
+	bool writeTable(std::vector<std::vector<wxString>> &rows, int badTime = 13) override;
 private:
-	bool writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField = 0, bool asc = true, int badTime = 13);
+	bool writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField = 0, bool asc = true, int badTime = 13) override;
 	void initVar();
 };
 

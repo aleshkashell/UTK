@@ -11,12 +11,12 @@ void gridFrameSource::initVar()
 	nameColmn.push_back(wxT("Номер техники"));
 	nameColmn.push_back(wxT("Вид техники"));
 }
-bool gridFrameSource::writeTable(std::vector<std::vector<wxString>> &rows){
+bool gridFrameSource::writeTable(std::vector<std::vector<wxString>> &rows, int badTime){
 	mRows = rows;
 	if (writeTableHelp(mRows, mSortField+1, mAsc)) return true;
 	return false;
 }
-bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc) {
+bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc, int badTime) {
 	//Выбор количества строк для отрисовки
 	if (rows.size() > this->GetNumberRows()){
 		this->AppendRows(rows.size() - this->GetNumberRows());

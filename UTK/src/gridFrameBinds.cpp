@@ -11,12 +11,12 @@ void gridFrameBinds::initVar()
     nameColmn.push_back(wxT("Логин сотрудника"));
     nameColmn.push_back(wxT("Номер техники"));
 }
-bool gridFrameBinds::writeTable(std::vector<std::vector<wxString>> &rows){
+bool gridFrameBinds::writeTable(std::vector<std::vector<wxString>> &rows, int badTime){
     mRows = rows;
     if (writeTableHelp(mRows, mSortField, mAsc)) return true;
     return false;
 }
-bool gridFrameBinds::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc) {
+bool gridFrameBinds::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc, int badTime) {
     //Выбор количества строк для отрисовки
     if (rows.size() > this->GetNumberRows()){
         this->AppendRows(rows.size() - this->GetNumberRows());

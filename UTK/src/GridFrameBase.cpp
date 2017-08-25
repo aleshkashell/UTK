@@ -33,12 +33,12 @@ wxString GridFrameBase::diffTime(wxString dateFirst, wxString dateLast) {
 	wxTimeSpan ts = dtLast - dtFirst;
 	return wxString::Format(wxT("%i"), ts.GetHours());
 }
-bool GridFrameBase::writeTable(std::vector<std::vector<wxString>> &rows) {
+bool GridFrameBase::writeTable(std::vector<std::vector<wxString>> &rows, int badTime) {
 	mRows = rows;
     if (writeTableHelp(mRows, mSortField, mAsc)) return true;
 	return false;
 }
-bool GridFrameBase::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc)
+bool GridFrameBase::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc, int badTime)
 {
 	return true;
 }

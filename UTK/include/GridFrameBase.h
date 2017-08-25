@@ -11,13 +11,13 @@ class GridFrameBase:
 public:
 	GridFrameBase(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString &name = wxGridNameStr);
 	void DrawCellHighlight(wxDC& dc, const wxGridCellAttr *attr);
-    virtual bool writeTable(std::vector<std::vector<wxString>> &rows);
+    virtual bool writeTable(std::vector<std::vector<wxString>> &rows, int badTime = 13);
 	//Разница между датами в часах
 	wxString diffTime(wxString dateFirst, wxString dateLast);
 	void Update();
 	void OnSortClickColumn(wxGridEvent &event);
 	std::vector<std::vector<wxString>> GetRows() { return mRows; }
-    virtual bool writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField = 0, bool asc = true);
+    virtual bool writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField = 0, bool asc = true, int badTime = 13);
 	virtual void initVar() {};
 
 
