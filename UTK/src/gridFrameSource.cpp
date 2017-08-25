@@ -13,7 +13,7 @@ void gridFrameSource::initVar()
 }
 bool gridFrameSource::writeTable(std::vector<std::vector<wxString>> &rows){
 	mRows = rows;
-	if (writeTableHelp(mRows, mSortField, mAsc)) return true;
+	if (writeTableHelp(mRows, mSortField+1, mAsc)) return true;
 	return false;
 }
 bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, int sortField, bool asc) {
@@ -26,18 +26,10 @@ bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, i
 	}
 	int maxim = std::min(int(rows[0].size()), this->GetNumberCols());	
 	//Сортировка
-	if (sortField != 1) {	//Не равно полю с номером
-		if (asc)
-			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return a[sortField] < b[sortField]; });
-		else
-			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return a[sortField] > b[sortField]; });
-	}
-	else {
-		if (asc)
-			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return wxAtoi(a[sortField]) < wxAtoi(b[sortField]); });
-		else
-			sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return wxAtoi(a[sortField]) > wxAtoi(b[sortField]); });
-	}
+	if (asc)
+		sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return a[sortField] < b[sortField]; });
+	else
+		sort(rows.begin(), rows.end(), [sortField](std::vector<wxString> &a, std::vector<wxString> &b) { return a[sortField] > b[sortField]; });
 	//Заполнение таблицы
 	for (int i = 0; i < rows.size(); i++) {
 		for (int g = 0; g < maxim; g++)
@@ -46,5 +38,5 @@ bool gridFrameSource::writeTableHelp(std::vector<std::vector<wxString>> &rows, i
 	return true;
 }
 void gridFrameSource::Update() {
-	writeTableHelp(mRows, mSortField, mAsc);
+	writeTableHelp(mRows, mSortField+1, mAsc);
 }
