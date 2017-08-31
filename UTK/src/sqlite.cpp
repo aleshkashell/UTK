@@ -210,6 +210,11 @@ wxString MyDB::getUserName()
     return wxString(buffer);
 #elif __LINUX__
     return wxString(wxT("Пользователь Linux"));
+#elif _WINDOWS
+    wchar_t buffer[UNLEN + 1];
+    DWORD len = UNLEN + 1;
+    GetUserName(buffer, &len);
+    return wxString(buffer);
 #endif
     return wxString(wxT("Unknown system"));
 }
