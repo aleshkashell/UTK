@@ -44,11 +44,11 @@ void sourceEditPanel::OnButtonAdd(wxCommandEvent & event)
         dlg.Destroy();
     }
     else {
-        AddRowDialogBind dlg(this, wxT("Порядковый номер"), wxT("Логин"), wxT("Номер техники"));
+        AddRowDialogBind dlg(this, wxT("Порядковый номер"), wxT("Логин"));
         long x =dlg.ShowModal();
         while (true) {
             if(x == wxID_OK){
-                if(db->addBind(dlg.GetSN(), dlg.GetLogin(), dlg.GetNumUnit())) break;
+                if(db->addBind(dlg.GetSN(), dlg.GetLogin())) break;
                 else {
                     wxMessageBox(db->getErrMsg());
                     x = dlg.ShowModal();
@@ -92,17 +92,15 @@ void sourceEditPanel::OnButtonEdit(wxCommandEvent &event) {
             wxMessageBox(wxT("Выберите строку для редактирования"));
             return;
         }
-        AddRowDialogBind dlg(this, wxT("Порядковый номер"), wxT("Логин"), wxT("Номер техники"));
+        AddRowDialogBind dlg(this, wxT("Порядковый номер"), wxT("Логин"));
         wxString oldSN = tmpGrid->GetCellValue(rows[0], 0);
         wxString oldLogin = tmpGrid->GetCellValue(rows[0], 1);
-        wxString oldNumber = tmpGrid->GetCellValue(rows[0], 2);
         dlg.SetSN(oldSN);
         dlg.SetLogin(oldLogin);
-        dlg.SetNumUnit(oldNumber);
         long x = dlg.ShowModal();
         while (true){
             if(x == wxID_OK){
-                if(db->editBind(oldSN, oldLogin, dlg.GetSN(), dlg.GetLogin(), dlg.GetNumUnit())) break;
+                if(db->editBind(oldSN, oldLogin, dlg.GetSN(), dlg.GetLogin())) break;
                 wxMessageBox(db->getErrMsg());
                 x = dlg.ShowModal();
             }

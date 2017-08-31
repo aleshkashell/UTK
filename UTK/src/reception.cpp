@@ -77,14 +77,8 @@ void reception::OnEnterTXTNumHours(wxCommandEvent& event)
 }
 void reception::OnEnterTXTNumTS(wxCommandEvent& event)
 {
-    if(getTxtNumTS().StartsWith("$")){
-        wxCommandEvent eventt(wxEVT_BUTTON, ID_BTNOK);
-        ProcessEvent(eventt);
-    }
-    else {
         txtNumHours->Clear();
         txtNumHours->SetFocus();
-    }
 }
 void reception::ClearAll()
 {

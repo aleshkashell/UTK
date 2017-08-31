@@ -119,7 +119,7 @@ void utkGuiFrame::DynInit() {
 	mSourceGrid.push_back(tmp);
     //Добавляем вкладку связанные списки
     gridFrameBinds* tmp2 = new gridFrameBinds(srcNb, wxID_ANY);
-    srcNb->AddPage(tmp2, wxT("Связанная техника"));
+    srcNb->AddPage(tmp2, wxT("Связанный список"));
     mSourceGrid.push_back(tmp2);
 }
 void utkGuiFrame::OnEnterReception(wxCommandEvent& event) {
@@ -131,21 +131,13 @@ void utkGuiFrame::OnRecBtnOK(wxCommandEvent &event) {
 		wxMessageBox(wxT("Не указан номер техники."));
 		return;
 	}
-    if(recPanel->getTxtNumTS().StartsWith("$")){
-        if(!db->inputUnit(recPanel->getTxtNumTS())){
-            wxMessageBox(db->getErrMsg());
-            return;
-        }
+    if (recPanel->getTxtNumHours() == 0) {
+        wxMessageBox(wxT("Не указаны моточасы."));
+        return;
     }
-    else{
-        if (recPanel->getTxtNumHours() == 0) {
-            wxMessageBox(wxT("Не указаны моточасы."));
-            return;
-        }
-        if (!db->inputUnit(recPanel->getTxtNumTS(), recPanel->getTxtNumHours())) {
-            wxMessageBox(db->getErrMsg());
-            return;
-        }
+    if (!db->inputUnit(recPanel->getTxtNumTS(), recPanel->getTxtNumHours())) {
+        wxMessageBox(db->getErrMsg());
+        return;
     }
 	tableUpdate();
 	recPanel->ClearAll();
@@ -165,16 +157,23 @@ void utkGuiFrame::OnExtBtnOK(wxCommandEvent& event) {
             return;
         }
     }
-    else{
-        if (extPanel->getTxtNumTS() == "") {
-            wxMessageBox(wxT("Номер техники не может быть пустым"));
-            return;
-        }
-        if (!db->outputUnit(extPanel->getTxtLogin(), extPanel->getTxtNumTS())) {
+    if (extPanel->getTxtNumTS() == "") {
+        wxMessageBox(wxT("Номер техники не может быть пустым"));
+        return;
+    }
+    wxString login = "nothing don't happen";
+    if(extPanel->getTxtLogin().StartsWith("*")){
+        login = db->getBindLogin(extPanel->getTxtLogin());
+        if(login == wxT("NOTHING")){
             wxMessageBox(db->getErrMsg());
-            tableUpdate();
             return;
         }
+    }
+    else login = extPanel->getTxtLogin();
+    if (!db->outputUnit(login, extPanel->getTxtNumTS())) {
+        wxMessageBox(db->getErrMsg());
+        tableUpdate();
+        return;
     }
 	tableUpdate();
 	extPanel->ClearAll();

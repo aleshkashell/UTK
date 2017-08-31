@@ -91,6 +91,7 @@ public:
 	std::vector<std::vector<wxString>> getAllNeedRem();
 	std::vector<std::vector<wxString>> getBatteryList();
     Binds getBinds(wxString lSN);
+    wxString getBindLogin(wxString lSN);
 	//Выдача батареи
 	bool outputBattery(wxString numUnit);
 	//Приём батареи
@@ -123,11 +124,11 @@ public:
 	//Добавить технику
 	bool addUnit(wxString numUnit, wxString nameUnit, int numTable);
     bool addBattery(wxString numUnit, wxString nameUnit);
-    bool addBind(wxString lSN, wxString lLogin, wxString numUnit);
+    bool addBind(wxString lSN, wxString lLogin);
 	//Редактировать технику
 	bool editUnit(wxString oldNum, wxString oldName, wxString numUnit, wxString nameUnit, int numTable);
     bool editBattery(wxString oldNum, wxString oldName, wxString numUnit, wxString nameUnit);
-    bool editBind(wxString oldSN, wxString oldLogin, wxString lSN, wxString lLogin, wxString numUnit);
+    bool editBind(wxString oldSN, wxString oldLogin, wxString lSN, wxString lLogin);
 	//Проверка что техника не существует
 	bool isHave(wxString numUnit);
     bool isHaveBindSN(wxString lSN);
@@ -169,6 +170,7 @@ private:
 	bool dbIsCorrect;
     wxString userName;
     Binds errorBind;	//Маркер ошибки
+    wxString errorTxtBind;
 
 
 };

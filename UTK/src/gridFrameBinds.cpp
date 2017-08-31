@@ -8,8 +8,8 @@ gridFrameBinds::gridFrameBinds(wxWindow * parent, wxWindowID id, const wxPoint &
 void gridFrameBinds::initVar()
 {
     nameColmn.push_back(wxT("П/Н"));
-    nameColmn.push_back(wxT("Логин сотрудника"));
-    nameColmn.push_back(wxT("Номер техники"));
+    nameColmn.push_back(wxT("Сотрудник"));
+    //nameColmn.push_back(wxT("Номер техники"));
 }
 bool gridFrameBinds::writeTable(std::vector<std::vector<wxString>> &rows, int badTime){
     mRows = rows;

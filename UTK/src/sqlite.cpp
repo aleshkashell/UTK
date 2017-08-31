@@ -5,7 +5,7 @@ MyDB::MyDB(wxString name, std::vector<wxString> tblMachine, std::vector<wxString
 	tblSource = tblList;
 	tblWork = tblMachine;
     tblRepair = wxT("Ремонт");
-    tblBindUnits = wxT("Связанная техника");
+    tblBindUnits = wxT("Связанный список");
     tblBattery = wxT("Аккумуляторы_тек");
     tblHistoryBattery = wxT("Аккумуляторы");
     loginRemont = wxT("remont");
@@ -231,6 +231,23 @@ Binds MyDB::getBinds(wxString lSN){
     }
 
 }
+wxString MyDB::getBindLogin(wxString lSN){
+    if(!isHaveBindSN(lSN)) return errorTxtBind;
+    wxString sqlRequest = wxT("SELECT \"") + column.login.name +
+            wxT("\" FROM \"") + tblBindUnits + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") +
+            lSN + wxT("\"");
+    try{
+        auto result = db.ExecuteQuery(sqlRequest);
+        result.NextRow();
+        return result.GetAsString(0);
+    }
+    catch(wxSQLite3Exception &e)
+    {
+        errMsg =  e.GetErrorCode() + wxT(":") + e.GetMessage();
+        myFunc::writeLog(errMsg);
+        return errorTxtBind;
+    }
+}
 
 std::vector<std::vector<wxString>> MyDB::getAllNeed(bool onlyInWork)
 {
@@ -327,6 +344,7 @@ std::vector<std::vector<wxString>> MyDB::getBatteryList() {
 void MyDB::initVar()
 {
     errorBind = Binds(wxT("NOTHING"), wxT("NOTHING"));
+    errorTxtBind = wxT("NOTHING");
 	userName = getUserName();
 	sortWork.push_back("");
 	sortWork.push_back(wxT(" WHERE \"") + column.status.name + wxT("\" = \"в работе\""));
@@ -344,7 +362,7 @@ void MyDB::initVar()
     mSrcFields.push_back(column.nameUnit);
     mBindFields.push_back(column.serialNumber);
     mBindFields.push_back(column.login);
-    mBindFields.push_back(column.numUnit);
+    //mBindFields.push_back(column.numUnit);
 	mBatteryFields.push_back(column.numUnit);
 	mBatteryFields.push_back(column.status);
 	mBatteryFields.push_back(column.dateIn);
@@ -781,7 +799,7 @@ std::vector<std::vector<wxString>> MyDB::getSourceUnit(int numTable)
             while (result.NextRow()) {
                 answer.push_back(std::vector<wxString>{
                     //0 - ID
-                    result.GetAsString(1), result.GetAsString(2), result.GetAsString(3)
+                    result.GetAsString(1), result.GetAsString(2)
                 });
             }
             return answer;
@@ -871,12 +889,12 @@ bool MyDB::addBattery(wxString numUnit, wxString nameUnit) {
 		return false;
 	}
 }
-bool MyDB::addBind(wxString lSN, wxString lLogin, wxString numUnit){
+bool MyDB::addBind(wxString lSN, wxString lLogin){
     if(isHaveBindSN(lSN) || isHaveBindLogin(lLogin)) return false;
     try{
         wxString sqlRequest = wxT("INSERT INTO \"") + tblBindUnits + wxT("\" (\"") + column.serialNumber.name + wxT("\", \"") +
-                column.login.name + wxT("\", \"") + column.numUnit.name + wxT("\") VALUES(\"") +
-                lSN + wxT("\", \"") + lLogin + wxT("\", \"") + numUnit + wxT("\");");
+                column.login.name + wxT("\") VALUES(\"") +
+                lSN + wxT("\", \"") + lLogin + wxT("\");");
         db.ExecuteUpdate(sqlRequest);
         return true;
     }
@@ -886,13 +904,12 @@ bool MyDB::addBind(wxString lSN, wxString lLogin, wxString numUnit){
         return false;
     }
 }
-bool MyDB::editBind(wxString oldSN, wxString oldLogin, wxString lSN, wxString lLogin, wxString numUnit){
+bool MyDB::editBind(wxString oldSN, wxString oldLogin, wxString lSN, wxString lLogin){
     if(oldSN == lSN){
         if(oldLogin != lLogin)
             if(isHaveBindLogin(lLogin)) return false;
         wxString sqlRequest = wxT("UPDATE \"") + tblBindUnits + wxT("\" SET \"") + column.serialNumber.name + wxT("\" = \"") +
-            lSN + wxT("\", \"") + column.login.name + wxT("\" = \"") + lLogin + wxT("\", \"") + column.numUnit.name +
-            wxT("\" = \"") + numUnit + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") + oldSN + wxT("\"");
+            lSN + wxT("\", \"") + column.login.name + wxT("\" = \"") + lLogin + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") + oldSN + wxT("\"");
         try{
             db.ExecuteUpdate(sqlRequest);
             return true;
@@ -906,8 +923,7 @@ bool MyDB::editBind(wxString oldSN, wxString oldLogin, wxString lSN, wxString lL
     if(oldLogin == lLogin){
         if(isHaveBindSN(lSN)) return false;
         wxString sqlRequest = wxT("UPDATE \"") + tblBindUnits + wxT("\" SET \"") + column.serialNumber.name + wxT("\" = \"") +
-            lSN + wxT("\", \"") + column.login.name + wxT("\" = \"") + lLogin + wxT("\", \"") + column.numUnit.name +
-            wxT("\" = \"") + numUnit + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") + oldSN + wxT("\"");
+            lSN + wxT("\", \"") + column.login.name + wxT("\" = \"") + lLogin + wxT("\", \"") + wxT("\" WHERE \"") + column.serialNumber.name + wxT("\" = \"") + oldSN + wxT("\"");
         try{
             db.ExecuteUpdate(sqlRequest);
             return true;

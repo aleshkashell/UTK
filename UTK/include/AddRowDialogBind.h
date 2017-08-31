@@ -5,11 +5,9 @@ class AddRowDialogBind :
     public wxDialog
 {
 public:
-    AddRowDialogBind(wxWindow *parent, wxString lSN, wxString lLogin, wxString lNumUnit);
-    wxString GetNumUnit();
+    AddRowDialogBind(wxWindow *parent, wxString lSN, wxString lLogin);
     wxString GetLogin();
     wxString GetSN();
-    void SetNumUnit(wxString lNumUnit);
     void SetLogin(wxString lLogin);
     void SetSN(wxString lSN);
 private:
