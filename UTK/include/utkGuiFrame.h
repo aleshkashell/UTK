@@ -99,6 +99,7 @@ class utkGuiFrame : public wxFrame
 		int badTime; //Просроченная техника
 		std::vector<wxString> tblsMachine;	//Таблицы выдачи
 		std::vector<wxString> tblsList;		//Таблицы со списком техники
+        wxString stopWord;
 		std::string programVersion;
 
 		//Основной слой

@@ -142,7 +142,7 @@ void utkGuiFrame::OnRecBtnOK(wxCommandEvent &event) {
 	tableUpdate();
 	recPanel->ClearAll();
 }
-void utkGuiFrame::OnEnterExtradition(wxCommandEvent& event) {
+void utkGuiFrame::  OnEnterExtradition(wxCommandEvent& event) {
 	wxCommandEvent eventt(wxEVT_BUTTON, extradition::ID_BTNOK);
 	OnExtBtnOK(eventt);
 }
@@ -151,18 +151,19 @@ void utkGuiFrame::OnExtBtnOK(wxCommandEvent& event) {
 		wxMessageBox(wxT("Логин не может быть пустым."));
 		return;
 	}
-    if(extPanel->getTxtLogin().StartsWith("$")){
+    /*
+    if(extPanel->getTxtLogin().StartsWith(stopWord)){
         if(!db->outputUnit(extPanel->getTxtLogin())){
             wxMessageBox(db->getErrMsg());
             return;
         }
-    }
+    }*/
     if (extPanel->getTxtNumTS() == "") {
         wxMessageBox(wxT("Номер техники не может быть пустым"));
         return;
     }
     wxString login = "nothing don't happen";
-    if(extPanel->getTxtLogin().StartsWith("*")){
+    if(extPanel->getTxtLogin().StartsWith(stopWord)){
         login = db->getBindLogin(extPanel->getTxtLogin());
         if(login == wxT("NOTHING")){
             wxMessageBox(db->getErrMsg());
@@ -380,7 +381,7 @@ void utkGuiFrame::loadConfig() {
 	pathOfBD = "utk_database.db";
 	tblsMachine = { wxT("Штабеллёры"), wxT("Электротележки"), wxT("Комплектовщики"), wxT("ЭлТележки_с_площ") };
 	tblsList = { wxT("списокШтабеллёры"), wxT("списокЭлектротележки"), wxT("списокКомплектовщики"), wxT("списокЭл_тел_отк_пл") };
-	
+    stopWord = wxT("$");
 	badTime = 13;
 	
 	
@@ -405,7 +406,14 @@ void utkGuiFrame::loadConfig() {
 			catch (nlohmann::detail::exception &e) {
 				wxMessageBox(wxT("Отсутствует аргумент badTime.\nБудет использовано значение по умолчанию."));
 				myFunc::writeLog(e.what());
-			}
+            }
+            try {
+                if (config.at("Terminate word") != "") stopWord = wxString::FromUTF8(config.at("Terminate word").get<std::string>());
+            }
+            catch (nlohmann::detail::exception &e) {
+                wxMessageBox(wxT("Отсутствует аргумент Terminate word.\nБудет использовано значение по умолчанию."));
+                myFunc::writeLog(e.what());
+            }
 			try {
 				if (config.at("fields") != "") {
 					std::vector<std::string> strTblsMachine = config.at("fields");
@@ -439,6 +447,7 @@ void utkGuiFrame::writeConfig()
 	nlohmann::json j;
 	j["pathOfBD"] = std::string(pathOfBD.utf8_str());
 	j["badTime"] = badTime;
+    j["Terminate word"] = std::string(stopWord.utf8_str());
 	std::vector<std::string> strTblsMachine;
 	for (auto f : tblsMachine) {
 		strTblsMachine.push_back(std::string(f.utf8_str()));
