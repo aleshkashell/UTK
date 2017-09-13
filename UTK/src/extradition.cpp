@@ -63,14 +63,8 @@ extradition::extradition(wxNotebook *parent) : wxPanel(parent)
 }
 void extradition::OnEnterTXTLogin(wxCommandEvent &event)
 {
-    if(txtLogin->GetValue().StartsWith("$")){
-        wxCommandEvent eventt(wxEVT_BUTTON, ID_BTNOK);
-        ProcessEvent(eventt);
-    }
-    else{
-        txtNumTS->Clear();
-        txtNumTS->SetFocus();
-    }
+    txtNumTS->Clear();
+    txtNumTS->SetFocus();
 }
 void extradition::OnEnterTXTNumTS(wxCommandEvent &event)
 {
